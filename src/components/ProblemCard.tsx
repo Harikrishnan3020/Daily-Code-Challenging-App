@@ -1,26 +1,24 @@
 import { Calendar, Tag, Zap } from "lucide-react";
-
-interface Problem {
-  id: number;
-  title: string;
-  difficulty: "easy" | "medium" | "hard";
-  category: string;
-  description: string;
-  examples: { input: string; output: string }[];
-}
+import { Problem } from "@/data/problems";
 
 interface ProblemCardProps {
   problem: Problem;
 }
 
 const difficultyConfig = {
-  easy: { label: "Easy", class: "difficulty-easy" },
-  medium: { label: "Medium", class: "difficulty-medium" },
-  hard: { label: "Hard", class: "difficulty-hard" },
+  beginner: { label: "Beginner", class: "difficulty-easy" },
+  intermediate: { label: "Intermediate", class: "difficulty-medium" },
+  advanced: { label: "Advanced", class: "difficulty-hard" },
 };
 
+/**
+ * ProblemCard Component
+ * Displays the daily challenge description, logic examples, and difficulty tags.
+ * Adapts styling based on problem difficulty level.
+ */
 const ProblemCard = ({ problem }: ProblemCardProps) => {
-  const difficulty = difficultyConfig[problem.difficulty];
+  // Fallback for safety if data doesn't match type
+  const difficulty = difficultyConfig[problem.difficulty] || difficultyConfig.beginner;
 
   return (
     <div className="glass-card p-4 md:p-6 animate-slide-up" style={{ animationDelay: "0.1s" }}>
@@ -29,7 +27,7 @@ const ProblemCard = ({ problem }: ProblemCardProps) => {
           <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
             <Calendar className="w-4 h-4 text-primary" />
           </div>
-          <span className="text-xs md:text-sm text-muted-foreground font-medium">Today's Challenge</span>
+          <span className="text-xs md:text-sm text-muted-foreground font-medium">Daily Challenge</span>
         </div>
         <div className="flex items-center gap-2">
           <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${difficulty.class}`}>
