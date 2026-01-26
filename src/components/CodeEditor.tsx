@@ -1,14 +1,29 @@
 import { useState } from "react";
 import { Terminal, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+export type Language = "javascript" | "python" | "c" | "cpp";
 
 interface CodeEditorProps {
   value: string;
   onChange: (value: string) => void;
-  language?: string;
+  language: Language;
+  onLanguageChange: (lang: Language) => void;
 }
 
-const CodeEditor = ({ value, onChange, language = "javascript" }: CodeEditorProps) => {
+/**
+ * CodeEditor Component
+ * A functional text area with line numbers and language selection.
+ * Handles syntax highlighting (basic) via font-mono and raw text input.
+ */
+const CodeEditor = ({ value, onChange, language, onLanguageChange }: CodeEditorProps) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -25,9 +40,18 @@ const CodeEditor = ({ value, onChange, language = "javascript" }: CodeEditorProp
         <div className="flex items-center gap-2">
           <Terminal className="w-4 h-4 text-primary" />
           <span className="text-sm font-medium text-foreground">Solution</span>
-          <span className="text-xs px-2 py-0.5 rounded bg-primary/20 text-primary font-mono">
-            {language}
-          </span>
+
+          <Select value={language} onValueChange={(val) => onLanguageChange(val as Language)}>
+            <SelectTrigger className="w-[120px] h-7 text-xs bg-primary/10 border-primary/20 text-primary">
+              <SelectValue placeholder="Language" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="javascript">JavaScript</SelectItem>
+              <SelectItem value="python">Python</SelectItem>
+              <SelectItem value="c">C</SelectItem>
+              <SelectItem value="cpp">C++</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <Button
           variant="ghost"
