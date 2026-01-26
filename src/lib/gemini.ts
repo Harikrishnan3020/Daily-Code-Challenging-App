@@ -15,6 +15,7 @@ const genAI = new GoogleGenerativeAI(API_KEY);
  */
 export const generateProblem = async (difficulty: string, excludeTitles: string[] = []): Promise<Problem> => {
   // Using gemini-1.5-flash (base name) for v1beta API compatibility
+  // TODO: Consider implementing streaming response for faster UX feedback
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt = `
