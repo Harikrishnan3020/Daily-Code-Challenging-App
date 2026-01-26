@@ -1,11 +1,37 @@
-import { Code2, Flame, Trophy } from "lucide-react";
+import { Code2, Flame, Trophy, User } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface HeaderProps {
   streak: number;
   problemsSolved: number;
 }
 
+interface UserData {
+  name: string;
+  email: string;
+  avatar?: string;
+  provider?: string;
+}
+
+/**
+ * Header Component
+ * Displays application logo, user streak, and solved count.
+ * Also handles user avatar display if logged in.
+ */
 const Header = ({ streak, problemsSolved }: HeaderProps) => {
+  const [user, setUser] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("hackathon-habit-user");
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        console.error("Failed to parse user data", e);
+      }
+    }
+  }, []);
+
   return (
     <header className="glass-card px-4 py-3 md:px-6 md:py-4 flex items-center justify-between animate-slide-up">
       <div className="flex items-center gap-2 md:gap-3">
@@ -13,7 +39,7 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
           <Code2 className="w-5 h-5 md:w-6 md:h-6 text-primary" />
         </div>
         <div>
-          <h1 className="text-lg md:text-xl font-bold gradient-text">CodeDaily</h1>
+          <h1 className="text-lg md:text-xl font-bold gradient-text">Hackathon Habit</h1>
           <p className="text-xs text-muted-foreground hidden sm:block">Master one problem at a time</p>
         </div>
       </div>
@@ -34,6 +60,26 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
             <p className="text-[10px] md:text-xs text-success/70 hidden sm:block">solved</p>
           </div>
         </div>
+
+        {user && (
+          <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-primary/10 border border-primary/20">
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-8 h-8 rounded-full bg-white/10"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                <User className="w-4 h-4 text-primary" />
+              </div>
+            )}
+            <div className="text-left hidden md:block">
+              <p className="text-xs font-medium text-foreground">{user.name}</p>
+              <p className="text-[10px] text-muted-foreground">{user.provider || 'Account'}</p>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
