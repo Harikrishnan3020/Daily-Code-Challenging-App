@@ -2,6 +2,7 @@ import { Calendar, Tag, Zap } from "lucide-react";
 import { Problem } from "@/data/problems";
 
 interface ProblemCardProps {
+  /** The problem object containing title, description, and examples */
   problem: Problem;
 }
 
