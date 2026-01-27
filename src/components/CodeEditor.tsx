@@ -12,9 +12,13 @@ import {
 export type Language = "javascript" | "python" | "c" | "cpp";
 
 interface CodeEditorProps {
+  /** Current code string value */
   value: string;
+  /** Callback emitted when code changes */
   onChange: (value: string) => void;
+  /** Currently selected programming language */
   language: Language;
+  /** Callback emitted when language selection changes */
   onLanguageChange: (lang: Language) => void;
 }
 
