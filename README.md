@@ -80,7 +80,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📂 Project Structure
 
-- `src/components`: Reusable UI components (Atomic design)
-- `src/lib`: Utilities, API clients (Gemini), and helper functions
-- `src/pages`: Main application routes/views
-- `src/data`: Static data assets (problem definitions)
+- `src/components`: Reusable UI components (buttons, cards, editor, hint system)
+- `src/hooks`: Custom React hooks for state management
+- `src/lib`: Core utilities including API clients (Gemini/Piston) and helper functions
+- `src/pages`: Main application views including layouts and routing logic
+- `src/data`: Static resources, problem definitions, and initial state configurations
+- `src/test`: Unit and integration tests
