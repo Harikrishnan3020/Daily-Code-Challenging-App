@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface HintSystemProps {
+    /** List of hint strings to be displayed progressively */
     hints: string[];
 }
 
