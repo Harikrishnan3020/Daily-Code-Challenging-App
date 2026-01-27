@@ -276,8 +276,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Background Gradient */}
       <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5 pointer-events-none" />
 
+      {/* Welcome / Streak Modal */}
       <Dialog open={showWelcomeModal} onOpenChange={setShowWelcomeModal}>
         <DialogContent>
           <DialogHeader>
