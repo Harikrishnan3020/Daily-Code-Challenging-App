@@ -31,9 +31,14 @@ interface CodeEditorProps {
 const CodeEditor = ({ value, onChange, language, onLanguageChange }: CodeEditorProps) => {
   const [copied, setCopied] = useState(false);
 
+  /**
+   * Copies the current editor content to the clipboard.
+   * Shows a temporary 'Copied!' feedback state.
+   */
   const handleCopy = async () => {
     await navigator.clipboard.writeText(value);
     setCopied(true);
+    // Reset copied state after 2 seconds
     setTimeout(() => setCopied(false), 2000);
   };
 
