@@ -12,6 +12,14 @@ export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Performs a deep comparison between two values to check for equality.
+ * Handles primitives, objects, and arrays recursively.
+ * 
+ * @param a - First value
+ * @param b - Second value
+ * @returns true if values are deeply equal, false otherwise
+ */
 export function deepEqual(a: any, b: any): boolean {
   if (a === b) return true;
 
