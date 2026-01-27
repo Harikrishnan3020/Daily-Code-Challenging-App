@@ -6,6 +6,7 @@ interface ProblemCardProps {
   problem: Problem;
 }
 
+/** Configuration for difficulty badge styling */
 const difficultyConfig = {
   beginner: { label: "Beginner", class: "difficulty-easy" },
   intermediate: { label: "Intermediate", class: "difficulty-medium" },
