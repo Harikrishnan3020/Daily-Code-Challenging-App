@@ -24,6 +24,7 @@ const ProblemCard = ({ problem }: ProblemCardProps) => {
 
   return (
     <div className="glass-card p-4 md:p-6 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+      {/* Header: Date and Difficulty Badges */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
@@ -42,6 +43,7 @@ const ProblemCard = ({ problem }: ProblemCardProps) => {
         </div>
       </div>
 
+      {/* Main Content: Title and Description */}
       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-3 flex items-center gap-2">
         <Zap className="w-5 h-5 text-primary" />
         {problem.title}
@@ -51,6 +53,7 @@ const ProblemCard = ({ problem }: ProblemCardProps) => {
         {problem.description}
       </p>
 
+      {/* Examples Section */}
       <div className="space-y-3">
         <h3 className="text-sm font-semibold text-foreground">Examples:</h3>
         {problem.examples.map((example, index) => (
