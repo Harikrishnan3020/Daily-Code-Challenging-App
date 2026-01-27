@@ -22,6 +22,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      {/* Client-side Routing */}
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
