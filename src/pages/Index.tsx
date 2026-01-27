@@ -23,7 +23,12 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-// Starter templates for supported languages
+/**
+ * Generates the boilerplate code for the selected language.
+ * @param lang - Target programming language
+ * @param functionName - Name of the function to generate
+ * @returns Starter code string
+ */
 const getStarterCode = (lang: Language, functionName: string): string => {
   switch (lang) {
     case "javascript":
