@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+/** Supported programming languages for the editor */
 export type Language = "javascript" | "python" | "c" | "cpp";
 
 interface CodeEditorProps {
