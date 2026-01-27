@@ -12,7 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
+  /** Current streak count in days */
   streak: number;
+  /** Total number of problems solved */
   problemsSolved: number;
 }
 
