@@ -46,6 +46,7 @@ const CodeEditor = ({ value, onChange, language, onLanguageChange }: CodeEditorP
 
   return (
     <div className="glass-card overflow-hidden animate-slide-up" style={{ animationDelay: "0.3s" }}>
+      {/* Toolbar: Language selector and Copy button */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-secondary/30">
         <div className="flex items-center gap-2">
           <Terminal className="w-4 h-4 text-primary" />
@@ -84,7 +85,7 @@ const CodeEditor = ({ value, onChange, language, onLanguageChange }: CodeEditorP
       </div>
 
       <div className="flex min-h-[300px] md:min-h-[400px]">
-        {/* Line numbers */}
+        {/* Line Numbers Column */}
         <div className="flex flex-col items-end px-3 py-4 bg-editor-bg/50 border-r border-border/30 select-none">
           {Array.from({ length: Math.max(lineNumbers, 15) }, (_, i) => (
             <span
@@ -96,7 +97,7 @@ const CodeEditor = ({ value, onChange, language, onLanguageChange }: CodeEditorP
           ))}
         </div>
 
-        {/* Editor area */}
+        {/* Editor Textarea */}
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
