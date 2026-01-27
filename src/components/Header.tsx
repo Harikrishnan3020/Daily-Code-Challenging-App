@@ -1,16 +1,19 @@
-import { Code2, Flame, Trophy, User } from "lucide-react";
+import { Code2, Flame, Trophy, User as UserIcon, LogOut, Settings as SettingsIcon } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { User } from "@/types";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   streak: number;
   problemsSolved: number;
-}
-
-interface UserData {
-  name: string;
-  email: string;
-  avatar?: string;
-  provider?: string;
 }
 
 /**
@@ -19,7 +22,8 @@ interface UserData {
  * Also handles user avatar display if logged in.
  */
 const Header = ({ streak, problemsSolved }: HeaderProps) => {
-  const [user, setUser] = useState<UserData | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedUser = localStorage.getItem("hackathon-habit-user");
@@ -32,9 +36,16 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
     }
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("hackathon-habit-auth");
+    // Optionally remove user data if you don't want to persist it across logins
+    // localStorage.removeItem("hackathon-habit-user"); 
+    navigate("/login");
+  };
+
   return (
     <header className="glass-card px-4 py-3 md:px-6 md:py-4 flex items-center justify-between animate-slide-up">
-      <div className="flex items-center gap-2 md:gap-3">
+      <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => navigate("/")}>
         <div className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-primary/20 flex items-center justify-center glow-primary">
           <Code2 className="w-5 h-5 md:w-6 md:h-6 text-primary" />
         </div>
@@ -61,24 +72,53 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
           </div>
         </div>
 
-        {user && (
-          <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-primary/10 border border-primary/20">
-            {user.avatar ? (
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-8 h-8 rounded-full bg-white/10"
-              />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <User className="w-4 h-4 text-primary" />
-              </div>
-            )}
-            <div className="text-left hidden md:block">
-              <p className="text-xs font-medium text-foreground">{user.name}</p>
-              <p className="text-[10px] text-muted-foreground">{user.provider || 'Account'}</p>
-            </div>
-          </div>
+        {user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors outline-none focus:ring-2 focus:ring-primary/50">
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full bg-white/10"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <UserIcon className="w-4 h-4 text-primary" />
+                  </div>
+                )}
+                <div className="text-left hidden md:block">
+                  <p className="text-xs font-medium text-foreground">{user.name}</p>
+                  <p className="text-[10px] text-muted-foreground">{user.provider || 'Account'}</p>
+                </div>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 glass-card border-white/10 bg-black/90 text-slate-200">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuItem className="cursor-pointer focus:bg-white/10 focus:text-white" onClick={() => navigate("/profile")}>
+                <UserIcon className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer focus:bg-white/10 focus:text-white">
+                <SettingsIcon className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuItem className="cursor-pointer focus:bg-red-500/20 text-red-400 focus:text-red-400" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <button
+            onClick={() => navigate("/login")}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm transition-colors shadow-lg shadow-primary/20"
+          >
+            <UserIcon className="w-4 h-4" />
+            <span>Sign In</span>
+          </button>
         )}
       </div>
     </header>

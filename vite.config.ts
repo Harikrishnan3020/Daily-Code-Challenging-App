@@ -14,6 +14,9 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
+    proxy: {
+      '/google-login': 'http://localhost:5000',
+    },
   },
   plugins: [react()].filter(Boolean),
   resolve: {

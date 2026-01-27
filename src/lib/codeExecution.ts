@@ -46,6 +46,7 @@ export const executeCode = async (
 
         // Wrap to call the function and print result as JSON for basic types
         // Using json.dumps to ensure output format is consistent
+        // We add unique delimiters to separate the actual result from any user stdout prints
         const args = JSON.stringify(input);
         fileContent = `
 import sys
@@ -57,15 +58,14 @@ if __name__ == "__main__":
     try:
         args = ${args}
         result = ${problem.functionName}(*args)
+        print("---PISTON-JSON-START---")
         print(json.dumps(result))
+        print("---PISTON-JSON-END---")
     except Exception as e:
         print(e, file=sys.stderr)
 `;
     } else if (language === "c" || language === "cpp") {
         throw new Error("C/C++ execution requires full program structure (main function) which is experimenting.");
-        // NOTE: Implementing robust C/C++ wrapping for arbitrary function signatures is extremely complex 
-        // because we have to generate struct definitions and parsing logic for the input JSON.
-        // For this prototype, we will limit to Python support via Piston or require standard IO.
     }
 
     try {
@@ -85,12 +85,30 @@ if __name__ == "__main__":
             throw new Error(result.run.stderr);
         }
 
-        // Try to parse JSON output
+        const output = result.run.stdout;
+
+        // Try to parse JSON output with delimiters
+        const startDelimiter = "---PISTON-JSON-START---";
+        const endDelimiter = "---PISTON-JSON-END---";
+
+        const startIndex = output.indexOf(startDelimiter);
+        const endIndex = output.indexOf(endDelimiter);
+
+        if (startIndex !== -1 && endIndex !== -1) {
+            const jsonStr = output.substring(startIndex + startDelimiter.length, endIndex).trim();
+            try {
+                return JSON.parse(jsonStr);
+            } catch {
+                throw new Error("Failed to parse execution result");
+            }
+        }
+
+        // Fallback for cases without delimiters (shouldn't happen for Python if updated correctly, but for others)
+        // Or if the script crashed before printing delimiters but didn't write to stderr
         try {
-            return JSON.parse(result.run.stdout.trim());
+            return JSON.parse(output.trim());
         } catch {
-            // If not JSON, maybe return raw string (or error if we expect strict structure)
-            return result.run.stdout.trim();
+            return output.trim();
         }
 
     } catch (err: any) {
