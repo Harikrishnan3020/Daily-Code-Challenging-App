@@ -18,8 +18,13 @@ interface HintSystemProps {
  * Tracks how many hints have been used.
  */
 const HintSystem = ({ hints }: HintSystemProps) => {
+    // State to track how many hints have been revealed so far
     const [revealedCount, setRevealedCount] = useState(0);
 
+    /**
+     * Reveals the next available hint if there are any left.
+     * Increments the revealedCount state.
+     */
     const revealNextHint = () => {
         if (revealedCount < hints.length) {
             setRevealedCount((prev) => prev + 1);
