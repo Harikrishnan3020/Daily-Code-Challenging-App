@@ -50,6 +50,7 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
 
   return (
     <header className="glass-card px-4 py-3 md:px-6 md:py-4 flex items-center justify-between animate-slide-up">
+      {/* Brand / Logo Section */}
       <div className="flex items-center gap-2 md:gap-3 cursor-pointer" onClick={() => navigate("/")}>
         <div className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-primary/20 flex items-center justify-center glow-primary">
           <Code2 className="w-5 h-5 md:w-6 md:h-6 text-primary" />
@@ -61,6 +62,7 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
       </div>
 
       <div className="flex items-center gap-3 md:gap-6">
+        {/* Streak Counter */}
         <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-warning/10 border border-warning/20">
           <Flame className="w-4 h-4 md:w-5 md:h-5 text-warning animate-glow-pulse" />
           <div className="text-right">
@@ -69,6 +71,7 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
           </div>
         </div>
 
+        {/* Problems Solved Counter */}
         <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-success/10 border border-success/20">
           <Trophy className="w-4 h-4 md:w-5 md:h-5 text-success" />
           <div className="text-right">
@@ -77,6 +80,7 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
           </div>
         </div>
 
+        {/* User Profile / Login */}
         {user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
