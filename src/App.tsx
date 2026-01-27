@@ -18,6 +18,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    {/* Global UI Providers: Tooltips and Toasts */}
     <TooltipProvider>
       <Toaster />
       <Sonner />
