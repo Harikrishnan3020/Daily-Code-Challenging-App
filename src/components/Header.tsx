@@ -38,6 +38,9 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
     }
   }, []);
 
+  /**
+   * Clears authentication state and redirects to login page.
+   */
   const handleLogout = () => {
     localStorage.removeItem("hackathon-habit-auth");
     // Optionally remove user data if you don't want to persist it across logins
