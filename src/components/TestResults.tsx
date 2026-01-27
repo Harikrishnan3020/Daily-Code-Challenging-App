@@ -1,11 +1,19 @@
 import { CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+/**
+ * Represents the outcome of a sinlge test case execution.
+ */
 export interface TestResult {
+    /** Whether the test succeeded */
     passed: boolean;
+    /** The arguments passed to the function */
     input: any;
+    /** The expected return value */
     expected: any;
+    /** The actual returned value */
     actual: any;
+    /** Error message if an exception was thrown */
     error?: string;
 }
 
@@ -36,8 +44,8 @@ const TestResults = ({ results, visible }: TestResultsProps) => {
                         <div
                             key={index}
                             className={`p-3 rounded-lg text-sm border ${result.passed
-                                    ? "bg-success/5 border-success/20"
-                                    : "bg-destructive/5 border-destructive/20"
+                                ? "bg-success/5 border-success/20"
+                                : "bg-destructive/5 border-destructive/20"
                                 }`}
                         >
                             <div className="flex items-center gap-2 mb-2">
