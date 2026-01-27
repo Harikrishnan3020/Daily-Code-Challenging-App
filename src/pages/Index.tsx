@@ -39,6 +39,11 @@ const getStarterCode = (lang: Language, functionName: string): string => {
   }
 };
 
+/**
+ * Index Page Component (Main Dashboard)
+ * Orchestrates the daily challenge flow, problem loading, and user progress.
+ * Manages state for code, results, streaks, and gamification.
+ */
 const Index = () => {
   // --- Persistent State ---
   const [userLevel, setUserLevel] = useState<"beginner" | "intermediate" | "advanced">(() => {
