@@ -33,6 +33,7 @@ const HintSystem = ({ hints }: HintSystemProps) => {
 
     return (
         <div className="glass-card p-4 md:p-6 animate-slide-up mt-4">
+            {/* Header Section: Title and Count */}
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-semibold flex items-center gap-2">
                     <Lightbulb className="w-4 h-4 text-warning" />
@@ -43,6 +44,7 @@ const HintSystem = ({ hints }: HintSystemProps) => {
                 </span>
             </div>
 
+            {/* Hint List: Displays currently revealed hints */}
             <div className="space-y-3">
                 {hints.slice(0, revealedCount).map((hint, index) => (
                     <div
@@ -54,6 +56,7 @@ const HintSystem = ({ hints }: HintSystemProps) => {
                 ))}
             </div>
 
+            {/* Action Button: Visible only if there are more hints to show */}
             {revealedCount < hints.length && (
                 <Button
                     variant="outline"
