@@ -1,9 +1,15 @@
+/**
+ * Utility Functions
+ * Common helpers for class merging and object comparison.
+ * Author: Antigravity Agent
+ */
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 /**
  * Merges Tailwind CSS classes with clsx and tailwind-merge.
- * ensures that conflicting classes are resolved correctly.
+ * This is a standard utility for Shadcn UI components to allow
+ * class overrides while resolving conflicts (e.g., px-2 vs px-4).
  * 
  * @param inputs - List of class names or conditional class objects
  * @returns Merged class string
