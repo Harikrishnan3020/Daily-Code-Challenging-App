@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { Clock, Pause, Play, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+/**
+ * TimerCard Component
+ * 
+ * A stopwatch-style timer to track how long a user spends on a problem.
+ * State persists only during the current session (not across reloads currently).
+ */
 const TimerCard = () => {
   const [seconds, setSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -18,6 +24,10 @@ const TimerCard = () => {
     };
   }, [isRunning]);
 
+  /**
+   * Formats seconds into HH:MM:SS string.
+   * @param totalSeconds - The total number of seconds to format.
+   */
   const formatTime = (totalSeconds: number) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
