@@ -27,6 +27,7 @@ npm run dev
 ## Important Notes:
 - The API key must have access to the Gemini API
 - Free tier keys work fine for this application
+- Free tier has rate limits (check Google AI Studio for details)
 - Keep your API key private (never commit .env to git)
 
 ## If You Don't Want to Use AI Features:

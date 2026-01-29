@@ -3,8 +3,8 @@
 This document explains the available npm scripts in the project.
 
 ## Development
-- `npm run dev`: Starts the Vite development server with hot-reload.
-- `npm run preview`: Preview the built production application locally.
+- `npm run dev`: **Starts the development server**. access the app at `http://localhost:8080`. Supports HMR (Hot Module Replacement).
+- `npm run preview`: **Preview Production Build**. Serve the output of the build command locally to verify production behavior.
 
 ## Build
 - `npm run build`: Compiles the application for production deployment.
