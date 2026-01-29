@@ -1,3 +1,8 @@
+/**
+ * ProblemCard Component
+ * Displays the daily coding challenge details including description, difficulty, and examples.
+ * Author: Antigravity Agent
+ */
 import { Calendar, Tag, Zap } from "lucide-react";
 import { Problem } from "@/data/problems";
 
@@ -15,8 +20,12 @@ const difficultyConfig = {
 
 /**
  * ProblemCard Component
- * Displays the daily challenge description, logic examples, and difficulty tags.
- * Adapts styling based on problem difficulty level.
+ * 
+ * Renders the full details of the daily coding challenge.
+ * Features:
+ * - Difficulty-based badging (Beginner/Intermediate/Advanced)
+ * - Clear separation of Problem Statement, Examples, and Constraints.
+ * - Glassmorphism design style.
  */
 const ProblemCard = ({ problem }: ProblemCardProps) => {
   // Fallback for safety if data doesn't match type
