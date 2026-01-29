@@ -2,12 +2,12 @@
 
 We love your input! We want to make contributing to this project as easy and transparent as possible.
 
-## Pull Request Process
+## 🚀 Pull Request Process
 
-1.  Update the README.md with details of changes to the interface, if applicable.
-2.  Ensure your code builds and runs locally without errors.
-3.  Format your code consistent with the existing style.
-4.  Submit a Pull Request and provide a clear description of the changes.
+1.  **Update Documentation**: Ensure the `README.md` reflects any changes to the interface or architecture.
+2.  **Verify Locally**: Ensure your code builds and runs locally without errors (`npm run dev` and `npm run build`).
+3.  **Code Style**: Format your code consistent with the existing style (Tailwind CSS, clean React hooks).
+4.  **Description**: Submit a Pull Request with a clear, descriptive title and body explaining *what* changed and *why*.
 
 ## Development
 
