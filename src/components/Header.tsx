@@ -1,7 +1,13 @@
+/**
+ * Header Component
+ * Top navigation bar showing branding, user stats, and profile menu.
+ * Author: Antigravity Agent
+ */
 import { Code2, Flame, Trophy, User as UserIcon, LogOut, Settings as SettingsIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "@/types";
+import RankBadge from "@/components/RankBadge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,14 +22,20 @@ interface HeaderProps {
   streak: number;
   /** Total number of problems solved */
   problemsSolved: number;
+  /** User's current XP */
+  xp?: number;
 }
 
 /**
  * Header Component
- * Displays application logo, user streak, and solved count.
- * Also handles user avatar display if logged in.
+ * 
+ * Displays key user statistics (streak, solved count, level/XP).
+ * Logic:
+ * - Hydrates user profile data from localStorage on mount.
+ * - Provides navigation and logout functionality.
+ * - Shows the specific 'RankBadge' based on calculated XP.
  */
-const Header = ({ streak, problemsSolved }: HeaderProps) => {
+const Header = ({ streak, problemsSolved, xp }: HeaderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
@@ -80,6 +92,23 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
           </div>
         </div>
 
+        {/* Leaderboard Link */}
+        <button
+          onClick={() => navigate("/leaderboard")}
+          className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20 transition-colors"
+          title="View Leaderboard"
+        >
+          <div className="p-1 bg-purple-500 rounded-full">
+            <Trophy className="w-3 h-3 text-white" />
+          </div>
+          <span className="text-sm font-medium text-purple-400 hidden lg:block">Leaderboard</span>
+        </button>
+
+        {/* Rank Badge */}
+        <div className="hidden lg:block">
+          <RankBadge problemsSolved={problemsSolved} xp={xp} size="md" />
+        </div>
+
         {/* User Profile / Login */}
         {user ? (
           <DropdownMenu>
@@ -98,7 +127,7 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
                 )}
                 <div className="text-left hidden md:block">
                   <p className="text-xs font-medium text-foreground">{user.name}</p>
-                  <p className="text-[10px] text-muted-foreground">{user.provider || 'Account'}</p>
+                  <p className="text-xs text-muted-foreground">{xp !== undefined ? `${xp} XP` : (user.provider || 'Account')}</p>
                 </div>
               </button>
             </DropdownMenuTrigger>
@@ -109,7 +138,7 @@ const Header = ({ streak, problemsSolved }: HeaderProps) => {
                 <UserIcon className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer focus:bg-white/10 focus:text-white">
+              <DropdownMenuItem className="cursor-pointer focus:bg-white/10 focus:text-white" onClick={() => navigate("/settings")}>
                 <SettingsIcon className="mr-2 h-4 w-4" />
                 <span>Settings</span>
               </DropdownMenuItem>
