@@ -1,4 +1,5 @@
 # Hackathon Habit 🚀
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 **Hackathon Habit** is a daily coding challenge application designed to help you build and maintain your coding streak. Solve algorithmic problems, verify your solutions with real test cases, and track your progress over time.
 
