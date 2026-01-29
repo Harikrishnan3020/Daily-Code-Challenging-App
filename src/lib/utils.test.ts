@@ -13,4 +13,10 @@ describe("deepEqual", () => {
         expect(deepEqual("a", "b")).toBe(false);
         expect(deepEqual(true, false)).toBe(false);
     });
+
+    it("should compare arrays correctly", () => {
+        expect(deepEqual([1, 2, 3], [1, 2, 3])).toBe(true);
+        expect(deepEqual([1, 2], [1, 2, 3])).toBe(false);
+        expect(deepEqual([], [])).toBe(true);
+    });
 });
