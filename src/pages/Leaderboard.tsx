@@ -16,8 +16,16 @@ const Leaderboard = () => {
     const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 
     useEffect(() => {
-        // Load all users
-        const allUsers = JSON.parse(localStorage.getItem("hackathon-habit-all-users") || "[]");
+        // Load all users from localStorage
+        let allUsers = JSON.parse(localStorage.getItem("hackathon-habit-all-users") || "[]");
+
+        // IMPORTANT: Filter out any users without a valid createdAt date
+        // This removes pre-seeded fake data while keeping real logged-in users
+        allUsers = allUsers.filter((user: UserType) => {
+            // Keep users who have a createdAt timestamp (real users from login)
+            // Remove users without proper metadata (fake/seeded data)
+            return user.createdAt && user.id && user.email;
+        });
 
         // Sort by XP descending
         const sortedUsers = allUsers.sort((a: UserType, b: UserType) => (b.xp || 0) - (a.xp || 0));
