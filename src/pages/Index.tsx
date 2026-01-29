@@ -1,3 +1,13 @@
+/**
+ * Index Page (Dashboard)
+ * 
+ * The main container for the application's core functionality.
+ * - Manages global state (streak, XP, user level)
+ * - Orchestrates the daily problem loading flow
+ * - Handles code submission and result visualization
+ * 
+ * @module Dashboard
+ */
 import { useState, useEffect, useCallback } from "react";
 import Header from "@/components/Header";
 import ProblemCard from "@/components/ProblemCard";
@@ -10,6 +20,7 @@ import { problems as staticProblems, Problem } from "@/data/problems";
 import { generateProblem } from "@/lib/gemini";
 import { executeCode } from "@/lib/codeExecution";
 import { deepEqual } from "@/lib/utils";
+import { getRankFromProblems, getRankFromXP, XP_REWARDS } from "@/lib/ranks";
 import { toast } from "sonner";
 import { Bell, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -36,8 +47,10 @@ const getStarterCode = (lang: Language, functionName: string): string => {
     case "python":
       return `def ${functionName}(*args):\n    # Your solution here\n    pass`;
     case "c":
+      // TODO: Implement C execution via Piston
       return `// C support coming soon (Use JS/Python for now)\n// Piston API requires main() function wrapper for C`;
     case "cpp":
+      // TODO: Implement C++ execution via Piston
       return `// C++ support coming soon (Use JS/Python for now)\n// Piston API requires main() function wrapper for C++`;
     default:
       return "";
@@ -65,6 +78,11 @@ const Index = () => {
     return saved ? parseInt(saved, 10) : 0;
   });
 
+  const [userXP, setUserXP] = useState(() => {
+    const saved = localStorage.getItem("hackathon-habit-xp");
+    return saved ? parseInt(saved, 10) : 0;
+  });
+
   const [lastVisit] = useState(() => {
     return localStorage.getItem("hackathon-habit-last-visit");
   });
@@ -79,12 +97,12 @@ const Index = () => {
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
-  const [isSolved, setIsSolved] = useState(false);
+  const [isSolved, setSolved] = useState(false);
 
   // --- Daily Logic & Problem Loading ---
   const loadProblem = useCallback(async (forceNew = false) => {
     setIsLoading(true);
-    setIsSolved(false); // Reset solved state for new problem
+    setSolved(false); // Reset solved state for new problem
     setShowResults(false);
     setTestResults([]);
 
@@ -179,7 +197,8 @@ const Index = () => {
     localStorage.setItem("hackathon-habit-level", userLevel);
     localStorage.setItem("hackathon-habit-streak", streak.toString());
     localStorage.setItem("hackathon-habit-solved", problemsSolved.toString());
-  }, [userLevel, streak, problemsSolved]);
+    localStorage.setItem("hackathon-habit-xp", userXP.toString());
+  }, [userLevel, streak, problemsSolved, userXP]);
 
 
   const requestNotificationPermission = () => {
@@ -235,11 +254,58 @@ const Index = () => {
     setShowResults(true);
 
     if (allPassed) {
-      setIsSolved(true); // Mark as solved
+      setSolved(true); // Mark as solved
       setStreak((prev) => prev + 1);
-      setProblemsSolved((prev) => prev + 1);
 
-      const newTotal = problemsSolved + 1;
+      // Problems update
+      const oldProblems = problemsSolved;
+      const newProblems = problemsSolved + 1;
+      setProblemsSolved(newProblems);
+
+      // XP Update
+      const xpGain = XP_REWARDS[userLevel];
+      const oldXP = userXP;
+      const newXP = oldXP + xpGain;
+      setUserXP(newXP);
+
+      // Update persistent user object and list for leaderboard
+      const currentUserStr = localStorage.getItem("hackathon-habit-user");
+      if (currentUserStr) {
+        const currentUser = JSON.parse(currentUserStr);
+        currentUser.xp = newXP;
+        localStorage.setItem("hackathon-habit-user", JSON.stringify(currentUser));
+
+        // Update in all-users list
+        const allUsers = JSON.parse(localStorage.getItem("hackathon-habit-all-users") || "[]");
+        const updatedUsers = allUsers.map((u: any) => u.id === currentUser.id ? { ...u, xp: newXP } : u);
+        localStorage.setItem("hackathon-habit-all-users", JSON.stringify(updatedUsers));
+      }
+
+      toast.success(`+${xpGain} XP Gained!`, {
+        description: "Excellent work!"
+      });
+
+      // Check for rank progression (using XP)
+      const oldRank = getRankFromXP(oldXP);
+      const newRank = getRankFromXP(newXP);
+
+      if (newRank.tier > oldRank.tier) {
+        // Rank up celebration!
+        setTimeout(() => {
+          toast.success(`🎉 Rank Up to ${newRank.name} League!`, {
+            description: `${newRank.description} - Keep crushing it!`,
+            duration: 5000,
+          });
+          confetti({
+            particleCount: 150,
+            spread: 120,
+            origin: { y: 0.6 },
+            colors: [newRank.color, '#FFD700', '#FFFFFF']
+          });
+        }, 1000);
+      }
+
+      const newTotal = newProblems;
       if (newTotal === 5 && userLevel === 'beginner') {
         setUserLevel('intermediate');
         toast.success("Level Up! 🌟", { description: "You are now an Intermediate coder!" });
@@ -296,7 +362,7 @@ const Index = () => {
       </Dialog>
 
       <div className="relative container max-w-6xl mx-auto px-4 py-4 md:py-6 space-y-4 md:space-y-6">
-        <Header streak={streak} problemsSolved={problemsSolved} />
+        <Header streak={streak} problemsSolved={problemsSolved} xp={userXP} />
 
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
@@ -341,7 +407,11 @@ const Index = () => {
 
           <div className="space-y-4 md:space-y-6 order-first lg:order-last">
             <TimerCard />
-            <HintSystem hints={currentProblem.hints} />
+            <HintSystem
+              hints={currentProblem.hints}
+              testsPassed={testResults.filter(r => r.passed).length}
+              totalTests={currentProblem.testCases.length}
+            />
 
 
             <div className="glass-card p-4 md:p-6 animate-slide-up" style={{ animationDelay: "0.6s" }}>
