@@ -7,6 +7,10 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
 // https://vitejs.dev/config/
+/**
+ * Vite Configuration
+ * Defines build settings, plugins (React), and proxy rules for backend development.
+ */
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
