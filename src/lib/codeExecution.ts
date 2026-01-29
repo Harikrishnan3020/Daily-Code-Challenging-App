@@ -1,3 +1,8 @@
+/**
+ * Code Execution Utility
+ * Handles executing user code in various languages using local eval (JS) or Piston API (Python).
+ * Author: Antigravity Agent
+ */
 import { Language } from "@/components/CodeEditor";
 import { Problem } from "@/data/problems";
 
@@ -10,6 +15,11 @@ interface PistonResponse {
     };
 }
 
+/**
+ * API endpoint for the Piston code execution engine.
+ * v2 API supports multiple languages and versions.
+ */
+// TODO: Move to VITE_PISTON_API_URL in .env for flexibility
 const PISTON_API_URL = "https://emkc.org/api/v2/piston/execute";
 
 /**
@@ -29,7 +39,9 @@ export const executeCode = async (
     input: any[]
 ): Promise<any> => {
     if (language === "javascript") {
-        // Local execution for JS
+        // Local execution for JS using Function constructor.
+        // WARNING: This runs in the browser's context. 
+        // In a production environment with untrusted code, this should be sandboxed or run server-side.
         const userFn = new Function(code + `\nreturn ${problem.functionName};`)();
         if (typeof userFn !== "function") throw new Error(`Function ${problem.functionName} not found.`);
         return userFn(...input);
@@ -112,6 +124,36 @@ if __name__ == "__main__":
         }
 
     } catch (err: any) {
-        throw new Error(err.message || "Execution failed");
+        // Enhance error message with line numbers if possible
+        let errorMsg = err.message || "Execution failed";
+
+        if (language === "python") {
+            // Python Piston errors usually look like: File "...", line 5, in ...
+            // Our wrapper adds 4 lines of prelude (empty, imports, empty)
+            // So we subtract 4 from the reported line number
+            const preludeOffset = 4;
+            errorMsg = errorMsg.replace(/line (\d+)/g, (match: string, lineNum: string) => {
+                const correctedLine = Math.max(1, parseInt(lineNum, 10) - preludeOffset);
+                return `line ${correctedLine}`;
+            });
+        } else if (language === "javascript") {
+            // JS errors in new Function often have line info in the stack, not the message
+            // Format: <anonymous>:2:5 or just :2:5
+            if (err.stack) {
+                const stackLines = err.stack.split('\n');
+                // Regex to find :line:column pattern typical in V8/Browsers for eval/new Function
+                // Looking for patterns like (<anonymous>:2:15) or (eval at ... :2:15)
+                const lineMatch = err.stack.match(/<anonymous>:(\d+):/);
+                if (lineMatch && lineMatch[1]) {
+                    const lineNum = parseInt(lineMatch[1], 10);
+                    // The appended "return ..." could cause errors on the last line + 1, 
+                    // but usually user errors are within their own code. 
+                    // No offset needed for new Function body starting at char 0
+                    errorMsg = `Line ${lineNum}: ${errorMsg}`;
+                }
+            }
+        }
+
+        throw new Error(errorMsg);
     }
 };
