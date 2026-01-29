@@ -1,3 +1,8 @@
+/**
+ * CodeEditor Component
+ * Multi-language code editor with line numbers and clipboard support.
+ * Author: Antigravity Agent
+ */
 import { useState } from "react";
 import { Terminal, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
