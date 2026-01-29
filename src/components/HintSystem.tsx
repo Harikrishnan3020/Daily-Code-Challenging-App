@@ -1,3 +1,8 @@
+/**
+ * HintSystem Component
+ * Progressively reveals hints linked to test case completion.
+ * Author: Antigravity Agent
+ */
 import { useState, useEffect } from "react";
 import { Lightbulb, Lock, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
