@@ -9,6 +9,7 @@
 *   **Real Code Execution**: Write code and run it instantly against multiple test cases.
 *   **Test Results Analysis**: Detailed breakdown of passed/failed tests with expected vs. actual outputs.
 *   **Streak Tracking**: Automatically saves your daily streak and total solved problems.
+*   **AI Integration**: Powered by Google Gemini to generate infinite unique coding challenges.
 *   **Confetti Celebration**: Visual rewards for successful submissions!
 
 ## 🛠️ Tech Stack
