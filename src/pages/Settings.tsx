@@ -279,14 +279,27 @@ const Settings = () => {
                                     Save Key
                                 </Button>
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                                This key is stored locally in your browser and used for personalized features.
-                            </p>
+                            <div className="flex flex-col gap-1">
+                                <p className="text-xs text-muted-foreground">
+                                    This key is stored locally in your browser and used for personalized features.
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    Don't have a key?{" "}
+                                    <a
+                                        href="https://aistudio.google.com/app/apikey"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-primary hover:underline"
+                                    >
+                                        Get one from Google AI Studio
+                                    </a>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
+
         </div>
     );
 };
