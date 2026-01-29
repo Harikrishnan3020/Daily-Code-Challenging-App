@@ -14,7 +14,9 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
+    // Proxy configuration for backend communication
     proxy: {
+      // Redirects /google-login requests to the Python backend running on port 5000
       '/google-login': 'http://localhost:5000',
     },
   },

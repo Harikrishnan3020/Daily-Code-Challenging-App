@@ -138,6 +138,12 @@
   }
 }
 
+/* 
+  ------------------------------
+  Custom Animations
+  ------------------------------
+*/
+
 @keyframes glow-pulse {
 
   0%,
@@ -212,6 +218,7 @@
   }
 }
 
+/* Floating animation for subtle movement */
 @keyframes float {
 
   0%,
@@ -242,6 +249,21 @@
 
 .delay-1000 {
   animation-delay: 1000ms;
+}
+
+/* Shimmer effect for loading states */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
 }
 
 /* Scrollbar styling */

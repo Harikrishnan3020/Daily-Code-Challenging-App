@@ -8,8 +8,9 @@ import App from "./App.tsx";
 import "./index.css";
 
 // Developer environment check
+// This allows developers to confirm that the app is running in the expected mode.
 if (import.meta.env.DEV) {
-    console.info("🚀 Hackathon Habit App mounting...");
+    console.info("🚀 Hackathon Habit App mounting in DEVELOPMENT mode...");
 }
 
 createRoot(document.getElementById("root")!).render(

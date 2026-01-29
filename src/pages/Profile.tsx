@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trophy, Flame, Zap, Calendar, Medal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import RankProgressionCard from "@/components/RankProgressionCard";
 
 import { User } from "@/types";
 
@@ -11,7 +12,8 @@ const Profile = () => {
     const [stats, setStats] = useState({
         streak: 0,
         solved: 0,
-        level: "beginner"
+        level: "beginner",
+        xp: 0
     });
     const [history, setHistory] = useState<string[]>([]);
 
@@ -33,7 +35,8 @@ const Profile = () => {
         const streak = parseInt(localStorage.getItem("hackathon-habit-streak") || "0");
         const solved = parseInt(localStorage.getItem("hackathon-habit-solved") || "0");
         const level = localStorage.getItem("hackathon-habit-level") || "beginner";
-        setStats({ streak, solved, level });
+        const xp = parseInt(localStorage.getItem("hackathon-habit-xp") || "0");
+        setStats({ streak, solved, level, xp });
 
         // Load History
         try {
@@ -125,11 +128,14 @@ const Profile = () => {
                             <Medal className="w-8 h-8" />
                         </div>
                         <div>
-                            <h3 className="text-2xl font-bold capitalize">{stats.level}</h3>
-                            <p className="text-sm text-muted-foreground">Current Rank</p>
+                            <h3 className="text-2xl font-bold">{stats.xp}</h3>
+                            <p className="text-sm text-muted-foreground">Total XP</p>
                         </div>
                     </div>
                 </div>
+
+                {/* Rank Progression Section */}
+                <RankProgressionCard problemsSolved={stats.solved} xp={stats.xp} />
 
                 {/* Activity History */}
                 <div className="glass-card p-6 md:p-8 animate-slide-up" style={{ animationDelay: "0.4s" }}>

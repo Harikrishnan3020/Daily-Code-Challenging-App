@@ -33,12 +33,12 @@ const CodeEditor = ({ value, onChange, language, onLanguageChange }: CodeEditorP
 
   /**
    * Copies the current editor content to the clipboard.
-   * Shows a temporary 'Copied!' feedback state.
-   */
+    * Uses the Clipboard API and sets a temporary feedback state.
+    */
   const handleCopy = async () => {
     await navigator.clipboard.writeText(value);
     setCopied(true);
-    // Reset copied state after 2 seconds
+    // Reset copied state after 2 seconds for visual feedback
     setTimeout(() => setCopied(false), 2000);
   };
 

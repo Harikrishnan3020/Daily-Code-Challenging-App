@@ -38,9 +38,9 @@ export const problems: Problem[] = [
         ],
         functionName: "twoSum",
         hints: [
-            "Start by thinking about what you need to find: two numbers that add up to the target. A brute force approach would check every possible pair, but that's O(n²). Can you do better?",
-            "Consider using a hash map (JavaScript object) to store numbers you've already seen along with their indices. As you iterate through the array, for each number, check if (target - current number) already exists in your map.",
-            "The key insight: if you're at index i looking at number nums[i], you need to find if (target - nums[i]) exists in your hash map. If it does, you've found your pair! Don't forget to add the current number to the map before moving to the next iteration."
+            "Test Case 1 (Basic): For input `[2,7,11,15]` and target `9`, you just need to find two numbers that sum to 9. Since 2+7=9, return their indices `[0, 1]`.",
+            "Test Case 2 (Logic): Elements don't need to be adjacent. For `[3,2,4]` and target `6`, we skip 3 and pick 2 and 4 (indices 1 and 2).",
+            "Test Case 3 (Edge Case): For `[3,3]`, you need to pick different indices. Ensure your logic doesn't use the same element twice (e.g. 3 at index 0 used twice)."
         ]
     },
     {
