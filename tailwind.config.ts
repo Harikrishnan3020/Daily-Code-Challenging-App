@@ -1,3 +1,7 @@
+/**
+ * Tailwind CSS Configuration
+ * Defines custom colors, fonts, and animations matching the design system.
+ */
 import type { Config } from "tailwindcss";
 
 export default {
@@ -5,6 +9,7 @@ export default {
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
+    // Layout and Container Configuration
     container: {
       center: true,
       padding: "1.5rem",
@@ -13,10 +18,12 @@ export default {
       },
     },
     extend: {
+      // Typography and Font Families
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
+      // Custom Color Palette (mapped to CSS variables)
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
