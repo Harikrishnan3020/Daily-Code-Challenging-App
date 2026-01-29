@@ -3,12 +3,21 @@ import { Send, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SubmitButtonProps {
+  /** Async function to handle submission logic. Returns true if successful. */
   onSubmit: () => Promise<boolean>;
+  /** Whether the button should be disabled interactively */
   disabled?: boolean;
 }
 
 type SubmitStatus = "idle" | "loading" | "success" | "error";
 
+/**
+ * SubmitButton Component
+ * 
+ * Handles code submission, triggers execution, and displays feedback.
+ * - Transitions through IDLE -> LOADING -> SUCCESS/ERROR states.
+ * - Shows inline feedback messages on completion.
+ */
 const SubmitButton = ({ onSubmit, disabled }: SubmitButtonProps) => {
   const [status, setStatus] = useState<SubmitStatus>("idle");
 
