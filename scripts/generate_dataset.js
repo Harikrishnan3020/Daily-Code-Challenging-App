@@ -1,4 +1,10 @@
 
+/**
+ * Dataset Generator Script
+ * Rapidly populates the problem database using Gemini AI to reach a target count.
+ * Usage: node scripts/generate_dataset.js
+ * Author: Antigravity Agent
+ */
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
 import path from "path";
