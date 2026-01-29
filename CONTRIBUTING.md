@@ -1,22 +1,33 @@
 # Contributing to Hackathon Habit
 
-We love your input! We want to make contributing to this project as easy and transparent as possible.
+We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
 
-## 🚀 Pull Request Process
+- Reporting a bug
+- Discussing the current state of the code
+- Submitting a fix
+- Proposing new features
+- Becoming a maintainer
 
-1.  **Update Documentation**: Ensure the `README.md` reflects any changes to the interface or architecture.
-2.  **Verify Locally**: Ensure your code builds and runs locally without errors (`npm run dev` and `npm run build`).
-3.  **Code Style**: Format your code consistent with the existing style (Tailwind CSS, clean React hooks).
-4.  **Description**: Submit a Pull Request with a clear, descriptive title and body explaining *what* changed and *why*.
+## We Develop with Github
 
-## Development
+We use github to host code, to track issues and feature requests, and to accept pull requests.
 
-1.  Install dependencies: `npm install`
-2.  Run dev server: `npm run dev`
-3.  Build: `npm run build`
+## Report bugs using Github's [issue tracker](https://github.com/Harikrishnan3020/Daily-Code-Challenging-App/issues)
 
-## Code Style
+We use GitHub issues to track public bugs. Report a bug by [opening a new issue](); it's that easy!
 
-- Use TypeScript for safety.
-- Prefer functional components with hooks.
-- Use Tailwind CSS for styling via utility classes.
+## Write bug reports with detail, background, and sample code
+
+**Great Bug Reports** tend to have:
+
+- A quick summary and/or background
+- Steps to reproduce
+  - Be specific!
+  - Give sample code if you can.
+- What you expected would happen
+- What actually happened
+- Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
+
+## License
+
+By contributing, you agree that your contributions will be licensed under its MIT License.
