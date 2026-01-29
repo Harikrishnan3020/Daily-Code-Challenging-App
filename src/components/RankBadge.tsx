@@ -1,3 +1,8 @@
+/**
+ * RankBadge Component
+ * Visual badge showing user's current rank tier with gradient styling.
+ * Author: Antigravity Agent
+ */
 import { getRankFromProblems, getRankFromXP } from "@/lib/ranks";
 import { Crown } from "lucide-react";
 
