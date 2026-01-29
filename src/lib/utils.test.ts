@@ -1,5 +1,16 @@
-import { deepEqual } from "./utils";
+import { deepEqual, cn } from "./utils";
 import { describe, it, expect } from "vitest";
+
+describe("cn", () => {
+    it("should merge classes correctly", () => {
+        expect(cn("c1", "c2")).toBe("c1 c2");
+        expect(cn("c1", null, false, "c2")).toBe("c1 c2");
+    });
+
+    it("should resolve tailwind conflicts", () => {
+        expect(cn("px-2", "px-4")).toBe("px-4");
+    });
+});
 
 describe("deepEqual", () => {
     it("should return true for identical primitives", () => {
