@@ -18,7 +18,7 @@ export default {
       },
     },
     extend: {
-      // Typography and Font Families
+      // Typography and Font Families - Inter for UI, JetBrains Mono for code
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
