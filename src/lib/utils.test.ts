@@ -19,4 +19,13 @@ describe("deepEqual", () => {
         expect(deepEqual([1, 2], [1, 2, 3])).toBe(false);
         expect(deepEqual([], [])).toBe(true);
     });
+
+    it("should compare objects correctly", () => {
+        const obj1 = { a: 1, b: { c: 2 } };
+        const obj2 = { a: 1, b: { c: 2 } };
+        const obj3 = { a: 1, b: { c: 3 } };
+
+        expect(deepEqual(obj1, obj2)).toBe(true);
+        expect(deepEqual(obj1, obj3)).toBe(false);
+    });
 });
