@@ -2,6 +2,7 @@
  * PostCSS Configuration
  * Configures the build process for CSS, including Tailwind CSS and autoprefixing.
  */
+/** @type {import('postcss-load-config').Config} */
 export default {
   plugins: {
     // Generate Tailwind utility classes
