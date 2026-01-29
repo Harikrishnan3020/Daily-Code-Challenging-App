@@ -62,7 +62,7 @@ const Login = () => {
                 const existingUser = users.find((u: Account) => u.email === email);
 
                 const userToSave = existingUser || {
-                    id: "demo-user",
+                    id: `user_${Date.now()}`,
                     email: email,
                     name: email.split("@")[0],
                     avatar: "",
@@ -71,6 +71,15 @@ const Login = () => {
                 };
 
                 localStorage.setItem("hackathon-habit-user", JSON.stringify(userToSave));
+
+                // Update global user list for Leaderboard
+                const userIndex = users.findIndex((u: Account) => u.email === email);
+                if (userIndex >= 0) {
+                    users[userIndex] = userToSave;
+                } else {
+                    users.push(userToSave);
+                }
+                localStorage.setItem("hackathon-habit-all-users", JSON.stringify(users));
 
                 // If it's the demo-user (not found in users list), we might want to carry over existing progress if any
                 // But for now, just load what we have.
