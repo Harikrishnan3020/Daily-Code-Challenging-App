@@ -35,6 +35,13 @@ interface HeaderProps {
  * - Provides navigation and logout functionality.
  * - Shows the specific 'RankBadge' based on calculated XP.
  */
+/**
+ * Header Component
+ * Displays the application logo, user stats (streak, XP), and navigation controls.
+ * @param streak - Current user streak in days
+ * @param problemsSolved - Total number of problems solved
+ * @param xp - Current user experience points
+ */
 const Header = ({ streak, problemsSolved, xp }: HeaderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
