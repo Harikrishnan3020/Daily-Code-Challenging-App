@@ -9,6 +9,7 @@
  * @module Dashboard
  */
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import ProblemCard from "@/components/ProblemCard";
 import TimerCard from "@/components/TimerCard";
@@ -63,6 +64,7 @@ const getStarterCode = (lang: Language, functionName: string): string => {
  * Manages state for code, results, streaks, and gamification.
  */
 const Index = () => {
+  const navigate = useNavigate();
   // --- Persistent State ---
   const [userLevel, setUserLevel] = useState<"beginner" | "intermediate" | "advanced">(() => {
     return (localStorage.getItem("hackathon-habit-level") as any) || "beginner";
@@ -144,14 +146,25 @@ const Index = () => {
       localStorage.setItem("hackathon-habit-history", JSON.stringify(problemHistory));
     } catch (error: any) {
       console.error("Gemini failed, using fallback", error);
+
+      if (error.message.includes("Missing API Key")) {
+        toast.error("AI Generation Unavailable", {
+          description: "Please add your API Key in Settings to generate new problems.",
+          action: {
+            label: "Settings",
+            onClick: () => navigate("/settings")
+          }
+        });
+      } else {
+        toast.error("AI Generation Failed", { description: "Using a classic problem instead." });
+      }
+
       const fallbackPool = staticProblems.filter(p => p.difficulty === userLevel);
       const pool = fallbackPool.length > 0 ? fallbackPool : staticProblems;
       const randomFallback = pool[Math.floor(Math.random() * pool.length)];
 
       setCurrentProblem(randomFallback);
       setCode(getStarterCode("javascript", randomFallback.functionName));
-
-      toast.error("AI Generation Failed", { description: "Using a classic problem instead." });
     } finally {
       setIsLoading(false);
     }
