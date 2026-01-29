@@ -1,8 +1,14 @@
+/**
+ * TestResults Component
+ * Visualizes the output of code execution against defined test cases.
+ * Shows detailed input/output logs and error messages.
+ * Author: Antigravity Agent
+ */
 import { CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 /**
- * Represents the outcome of a sinlge test case execution.
+ * Represents the outcome of a single test case execution.
  */
 export interface TestResult {
     /** Whether the test succeeded */
@@ -18,7 +24,9 @@ export interface TestResult {
 }
 
 interface TestResultsProps {
+    /** List of results from code execution */
     results: TestResult[];
+    /** Controls component visibility */
     visible: boolean;
 }
 
