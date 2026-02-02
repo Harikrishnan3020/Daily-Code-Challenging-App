@@ -2,6 +2,7 @@
  * CodeEditor Component
  * Multi-language code editor with line numbers and clipboard support.
  * Author: Antigravity Agent
+  * Last Audit: 2026-02-02
  */
 import { useState } from "react";
 import { Terminal, Copy, Check } from "lucide-react";
