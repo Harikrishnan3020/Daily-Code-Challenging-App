@@ -1,3 +1,8 @@
+/**
+ * File: dialog.tsx
+ * Description: Implementation of dialog.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
