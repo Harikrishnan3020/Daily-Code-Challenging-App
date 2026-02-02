@@ -1,6 +1,7 @@
 /**
  * Utility to clear fake/mock data from localStorage
  * Run this once to remove any pre-seeded fake users from the leaderboard
+  * Last Audit: 2026-02-02
  */
 
 export const clearFakeUsers = () => {
