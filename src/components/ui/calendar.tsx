@@ -1,3 +1,8 @@
+/**
+ * File: calendar.tsx
+ * Description: Implementation of calendar.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
