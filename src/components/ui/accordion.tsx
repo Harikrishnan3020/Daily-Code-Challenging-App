@@ -1,3 +1,8 @@
+/**
+ * File: accordion.tsx
+ * Description: Implementation of accordion.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ChevronDown } from "lucide-react";
