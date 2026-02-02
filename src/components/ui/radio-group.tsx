@@ -1,3 +1,8 @@
+/**
+ * File: radio-group.tsx
+ * Description: Implementation of radio-group.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import * as React from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { Circle } from "lucide-react";
