@@ -1,3 +1,8 @@
+/**
+ * File: chart.tsx
+ * Description: Implementation of chart.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
