@@ -1,3 +1,8 @@
+/**
+ * File: WeaknessAnalysis.tsx
+ * Description: Implementation of WeaknessAnalysis.
+ * Copyright: 2026 Daily Code Challenge
+ */
 
 import { TopicStat, getWeaknessAnalysis } from '@/lib/analytics';
 import { TrendingUp, AlertTriangle, Lightbulb, ArrowRight } from 'lucide-react';
