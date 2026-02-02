@@ -1,3 +1,8 @@
+/**
+ * File: Profile.tsx
+ * Description: Implementation of Profile.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trophy, Flame, Zap, Calendar, Medal, Target, Trash2 } from "lucide-react";
