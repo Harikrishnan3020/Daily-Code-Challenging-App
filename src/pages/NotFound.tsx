@@ -1,3 +1,8 @@
+/**
+ * File: NotFound.tsx
+ * Description: Implementation of NotFound.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 
