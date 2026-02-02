@@ -1,3 +1,8 @@
+/**
+ * File: SkillRadar.tsx
+ * Description: Implementation of SkillRadar.
+ * Copyright: 2026 Daily Code Challenge
+ */
 
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, TooltipProps } from 'recharts';
 import { TopicStat } from '@/lib/analytics';
