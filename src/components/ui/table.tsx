@@ -1,3 +1,8 @@
+/**
+ * File: table.tsx
+ * Description: Implementation of table.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
