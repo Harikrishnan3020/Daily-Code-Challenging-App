@@ -1,3 +1,8 @@
+/**
+ * File: ErrorBoundary.tsx
+ * Description: Implementation of ErrorBoundary.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
