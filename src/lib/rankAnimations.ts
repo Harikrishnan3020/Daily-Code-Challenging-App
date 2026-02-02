@@ -2,6 +2,7 @@
  * Rank Animation Utilities
  * Provides functions to trigger visual effects (confetti, etc.) based on user rank.
  * Author: Antigravity Agent
+  * Last Audit: 2026-02-02
  */
 import confetti from "canvas-confetti";
 import { Rank } from "./ranks";
