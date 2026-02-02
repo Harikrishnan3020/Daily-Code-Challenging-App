@@ -96,8 +96,8 @@ Return ONLY the JSON object, no markdown formatting.`;
     const problem = JSON.parse(jsonString) as Problem;
     problem.id = Date.now();
     return problem;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Groq Generation Error:", error);
-    throw new Error("Failed to generate challenge with Groq: " + error.message);
+    throw new Error("Failed to generate challenge with Groq: " + (error as Error).message);
   }
 };

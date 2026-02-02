@@ -5,101 +5,62 @@
  * - Manages global state (streak, XP, user level)
  * - Orchestrates the daily problem loading flow
  * - Handles code submission and result visualization
+ * - Provides post-completion analysis and recommendations
  * 
  * @module Dashboard
  */
-import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Loader2, Bell, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
+import confetti from "canvas-confetti";
+
 import Header from "@/components/Header";
-import ProblemCard from "@/components/ProblemCard";
-import TimerCard from "@/components/TimerCard";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import CodeEditor, { Language } from "@/components/CodeEditor";
 import SubmitButton from "@/components/SubmitButton";
 import TestResults, { TestResult } from "@/components/TestResults";
+import ProblemCard from "@/components/ProblemCard";
 import HintSystem from "@/components/HintSystem";
-import { problems as staticProblems, Problem } from "@/data/problems";
+import TimerCard from "@/components/TimerCard";
+import SolutionFeedback from "@/components/SolutionFeedback";
+
 import { generateProblem } from "@/lib/gemini";
 import { executeCode } from "@/lib/codeExecution";
 import { deepEqual } from "@/lib/utils";
-import { getRankFromProblems, getRankFromXP, XP_REWARDS } from "@/lib/ranks";
-import { toast } from "sonner";
-import { Bell, Loader2, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Problem, problems as staticProblems } from "@/data/problems";
+import { getRankFromXP, XP_REWARDS } from "@/lib/ranks";
+import { getStarterCode } from "@/lib/starterCode";
+import { analyzeCode as analyzeUserCode, CodeAnalysis } from "@/lib/codeAnalyzer";
 
-import confetti from "canvas-confetti";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-
-/**
- * Generates the boilerplate code for the selected language.
- * @param lang - Target programming language
- * @param functionName - Name of the function to generate
- * @returns Starter code string
- */
-const getStarterCode = (lang: Language, functionName: string): string => {
-  switch (lang) {
-    case "javascript":
-      return `function ${functionName}(...args) {\n  // Your solution here\n  \n}`;
-    case "python":
-      return `def ${functionName}(*args):\n    # Your solution here\n    pass`;
-    case "c":
-      // TODO: Implement C execution via Piston
-      return `// C support coming soon (Use JS/Python for now)\n// Piston API requires main() function wrapper for C`;
-    case "cpp":
-      // TODO: Implement C++ execution via Piston
-      return `// C++ support coming soon (Use JS/Python for now)\n// Piston API requires main() function wrapper for C++`;
-    default:
-      return "";
-  }
-};
-
-/**
- * Index Page Component (Main Dashboard)
- * Orchestrates the daily challenge flow, problem loading, and user progress.
- * Manages state for code, results, streaks, and gamification.
- */
 const Index = () => {
   const navigate = useNavigate();
-  // --- Persistent State ---
-  const [userLevel, setUserLevel] = useState<"beginner" | "intermediate" | "advanced">(() => {
-    return (localStorage.getItem("hackathon-habit-level") as any) || "beginner";
-  });
+  const location = useLocation();
 
-  const [streak, setStreak] = useState(() => {
-    const saved = localStorage.getItem("hackathon-habit-streak");
-    return saved ? parseInt(saved, 10) : 0;
-  });
-
-  const [problemsSolved, setProblemsSolved] = useState(() => {
-    const saved = localStorage.getItem("hackathon-habit-solved");
-    return saved ? parseInt(saved, 10) : 0;
-  });
-
-  const [userXP, setUserXP] = useState(() => {
-    const saved = localStorage.getItem("hackathon-habit-xp");
-    return saved ? parseInt(saved, 10) : 0;
-  });
-
-  const [lastVisit] = useState(() => {
-    return localStorage.getItem("hackathon-habit-last-visit");
-  });
-
-  // --- Dynamic Problem State ---
-  const [currentProblem, setCurrentProblem] = useState<Problem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [language, setLanguage] = useState<Language>("javascript");
+  const [currentProblem, setCurrentProblem] = useState<Problem | null>(null);
   const [code, setCode] = useState("");
-
-  // --- UI State ---
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [showResults, setShowResults] = useState(false);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [isSolved, setSolved] = useState(false);
+
+  // Post-completion analysis
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [codeAnalysis, setCodeAnalysis] = useState<CodeAnalysis | null>(null);
+  const problemStartTime = useRef<number>(Date.now());
+  const [actualTimeTaken, setActualTimeTaken] = useState<number>(0); // Store exact time at submission
+
+  // User Progression State
+  const [userLevel, setUserLevel] = useState<"beginner" | "intermediate" | "advanced">(() =>
+    (localStorage.getItem("hackathon-habit-level") as "beginner" | "intermediate" | "advanced") || "beginner"
+  );
+  const [streak, setStreak] = useState(() => parseInt(localStorage.getItem("hackathon-habit-streak") || "0"));
+  const [problemsSolved, setProblemsSolved] = useState(() => parseInt(localStorage.getItem("hackathon-habit-solved") || "0"));
+  const [userXP, setUserXP] = useState(() => parseInt(localStorage.getItem("hackathon-habit-xp") || "0"));
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [lastVisit] = useState(localStorage.getItem("hackathon-habit-last-visit"));
+  const [language, setLanguage] = useState<Language>("javascript");
 
   // --- Daily Logic & Problem Loading ---
   const loadProblem = useCallback(async (forceNew = false) => {
@@ -107,13 +68,31 @@ const Index = () => {
     setSolved(false); // Reset solved state for new problem
     setShowResults(false);
     setTestResults([]);
+    problemStartTime.current = Date.now(); // Reset timer for new problem
 
     const todayStr = new Date().toDateString();
     const storedDate = localStorage.getItem("hackathon-habit-problem-date");
     const storedProblem = localStorage.getItem("hackathon-habit-daily-problem");
 
-    // If we have a problem for today and NOT forcing new, use it
-    if (!forceNew && storedDate === todayStr && storedProblem) {
+    // Check if we are coming from "Practice" button or specific problem recommendation
+    const practiceCategory = location.state?.focusCategory;
+    const loadProblemId = location.state?.loadProblemId;
+
+    // If loading a specific problem by ID
+    if (loadProblemId) {
+      const specificProblem = staticProblems.find(p => p.id === loadProblemId);
+      if (specificProblem) {
+        setCurrentProblem(specificProblem);
+        setCode(getStarterCode("javascript", specificProblem.functionName));
+        setIsLoading(false);
+        // Clear state so reload doesn't stick
+        window.history.replaceState({}, '');
+        return;
+      }
+    }
+
+    // If we have a problem for today and NOT forcing new AND no specific practice intent, use it
+    if (!forceNew && !practiceCategory && storedDate === todayStr && storedProblem) {
       try {
         const parsed = JSON.parse(storedProblem);
         setCurrentProblem(parsed);
@@ -128,12 +107,49 @@ const Index = () => {
     // Otherwise, generate a NEW one with Gemini
     try {
       const problemHistory = JSON.parse(localStorage.getItem("hackathon-habit-history") || "[]");
+      const detailedHistory = JSON.parse(localStorage.getItem("hackathon-habit-detailed-history") || "[]");
+
+      // --- Adaptive Learning Analysis ---
+      // Analyze last 10 problems to find weaknesses
+      let focusCategory = practiceCategory || undefined;
+      let toastMessage = "Our AI is crafting a unique problem just for you.";
+
+      if (practiceCategory) {
+        toastMessage = `Generating a targeted ${practiceCategory} challenge to help you improve!`;
+        // Clear state so reload doesn't stick
+        window.history.replaceState({}, '');
+      } else if (detailedHistory.length >= 5) {
+        const sorted = detailedHistory.sort((a: { date: number }, b: { date: number }) => b.date - a.date); // Sort by date just in case
+        const recentActivity = sorted.slice(0, 10);
+
+        // Count category frequency in recent history
+        const categoryCounts: Record<string, number> = {};
+        recentActivity.forEach((entry: { category: string }) => {
+          categoryCounts[entry.category] = (categoryCounts[entry.category] || 0) + 1;
+        });
+
+        // Simple heuristic: If you haven't seen a topic in a while, or if logic is added for "failed" attempts later
+        // For now, let's randomly pick a category they haven't seen much of, OR
+        // purely random rotation if balanced. 
+        // A better approach for "what user lacks":
+        // If we tracked failures, we'd pick that. Since we only track 'solved' on submit currently (or skipped),
+        // let's assume we want to broaden horizons.
+
+        // Let's bias towards a standard set of topics if missing
+        const standardTopics = ["Arrays", "Strings", "Dynamic Programming", "Trees", "Graphs", "Hash Maps"];
+        const missingTopics = standardTopics.filter(t => !Object.keys(categoryCounts).includes(t));
+
+        if (missingTopics.length > 0) {
+          focusCategory = missingTopics[Math.floor(Math.random() * missingTopics.length)];
+          toastMessage = `Noticed you haven't done ${focusCategory} lately. Let's practice that!`;
+        }
+      }
 
       toast.info(forceNew ? "Generating Next Challenge..." : "Generating Daily Challenge...", {
-        description: "Our AI is crafting a unique problem just for you."
+        description: toastMessage
       });
 
-      const newProblem = await generateProblem(userLevel, problemHistory);
+      const newProblem = await generateProblem(userLevel, problemHistory, focusCategory);
 
       setCurrentProblem(newProblem);
       setCode(getStarterCode("javascript", newProblem.functionName));
@@ -142,21 +158,27 @@ const Index = () => {
       localStorage.setItem("hackathon-habit-problem-date", todayStr);
       localStorage.setItem("hackathon-habit-daily-problem", JSON.stringify(newProblem));
 
+      // Quick history update (titles only)
       problemHistory.push(newProblem.title);
       localStorage.setItem("hackathon-habit-history", JSON.stringify(problemHistory));
-    } catch (error: any) {
+
+    } catch (error: unknown) {
       console.error("Gemini failed, using fallback", error);
 
-      if (error.message.includes("Missing API Key")) {
-        toast.error("AI Generation Unavailable", {
-          description: "Please add your API Key in Settings to generate new problems.",
+      if ((error as Error).message.includes("Missing API Key")) {
+        toast.error("🔑 API Key Required", {
+          description: "Add your Gemini API key in Settings to unlock AI-generated problems!",
+          duration: 6000,
           action: {
-            label: "Settings",
+            label: "Open Settings",
             onClick: () => navigate("/settings")
           }
         });
       } else {
-        toast.error("AI Generation Failed", { description: "Using a classic problem instead." });
+        toast.info("Using Classic Problem", {
+          description: "AI generation temporarily unavailable. You're getting a curated challenge instead!",
+          duration: 4000
+        });
       }
 
       const fallbackPool = staticProblems.filter(p => p.difficulty === userLevel);
@@ -168,7 +190,7 @@ const Index = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [userLevel]);
+  }, [userLevel, location.state?.focusCategory, navigate]);
 
   // Initial load
   useEffect(() => {
@@ -203,7 +225,7 @@ const Index = () => {
       setShowWelcomeModal(true);
     }
     localStorage.setItem("hackathon-habit-last-visit", todayStr);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- Persistence ---
   useEffect(() => {
@@ -211,6 +233,38 @@ const Index = () => {
     localStorage.setItem("hackathon-habit-streak", streak.toString());
     localStorage.setItem("hackathon-habit-solved", problemsSolved.toString());
     localStorage.setItem("hackathon-habit-xp", userXP.toString());
+
+    // CRITICAL: Also update the user object to persist data across logins
+    const currentUserStr = localStorage.getItem("hackathon-habit-user");
+    if (currentUserStr) {
+      try {
+        const currentUser = JSON.parse(currentUserStr);
+        const history = JSON.parse(localStorage.getItem("hackathon-habit-history") || "[]");
+        const lastVisit = localStorage.getItem("hackathon-habit-last-visit") || "";
+
+        // Update user object with all current progress
+        const updatedUser = {
+          ...currentUser,
+          xp: userXP,
+          problemsSolved: problemsSolved,
+          streak: streak,
+          level: userLevel,
+          history: history,
+          lastVisit: lastVisit
+        };
+
+        localStorage.setItem("hackathon-habit-user", JSON.stringify(updatedUser));
+
+        // Also update in all-users list for leaderboard
+        const allUsers = JSON.parse(localStorage.getItem("hackathon-habit-all-users") || "[]");
+        const updatedUsers = allUsers.map((u: { id: string }) =>
+          u.id === currentUser.id ? updatedUser : u
+        );
+        localStorage.setItem("hackathon-habit-all-users", JSON.stringify(updatedUsers));
+      } catch (error) {
+        console.error("Failed to update user object:", error);
+      }
+    }
   }, [userLevel, streak, problemsSolved, userXP]);
 
 
@@ -227,7 +281,17 @@ const Index = () => {
   };
 
   const handleNextProblem = () => {
+    setShowFeedback(false);
     loadProblem(true);
+  };
+
+  const handleContinuePractice = () => {
+    setShowFeedback(false);
+    // Navigate to practice mode with focus category
+    if (currentProblem) {
+      navigate("/", { state: { focusCategory: currentProblem.category } });
+      loadProblem(true);
+    }
   };
 
   const handleSubmit = async (): Promise<boolean> => {
@@ -239,7 +303,7 @@ const Index = () => {
     // Small UI delay
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    let results: TestResult[] = [];
+    const results: TestResult[] = [];
     let allPassed = true;
 
     try {
@@ -252,19 +316,24 @@ const Index = () => {
           const inputs = JSON.parse(JSON.stringify(testCase.input));
           result = await executeCode(language, code, currentProblem, inputs);
           passed = deepEqual(result, testCase.expected);
-        } catch (err: any) {
-          errorMsg = err.message;
+        } catch (err: unknown) {
+          errorMsg = (err as Error).message;
         }
         if (!passed) allPassed = false;
         results.push({ passed, input: testCase.input, expected: testCase.expected, actual: result, error: errorMsg });
       }
-    } catch (error: any) {
-      toast.error("Execution Error", { description: error.message });
+    } catch (error: unknown) {
+      toast.error("Execution Error", { description: (error as Error).message });
       return false;
     }
 
     setTestResults(results);
     setShowResults(true);
+
+    if (results.length === 0) {
+      toast.error("No test cases found", { description: "This problem seems to be malformed." });
+      return false;
+    }
 
     if (allPassed) {
       setSolved(true); // Mark as solved
@@ -285,13 +354,55 @@ const Index = () => {
       const currentUserStr = localStorage.getItem("hackathon-habit-user");
       if (currentUserStr) {
         const currentUser = JSON.parse(currentUserStr);
-        currentUser.xp = newXP;
-        localStorage.setItem("hackathon-habit-user", JSON.stringify(currentUser));
+        const history = JSON.parse(localStorage.getItem("hackathon-habit-history") || "[]");
+        const lastVisit = localStorage.getItem("hackathon-habit-last-visit") || "";
+
+        // Update ALL user progress fields
+        const updatedUser = {
+          ...currentUser,
+          xp: newXP,
+          problemsSolved: newProblems,
+          streak: streak,
+          level: userLevel,
+          history: history,
+          lastVisit: lastVisit
+        };
+
+        localStorage.setItem("hackathon-habit-user", JSON.stringify(updatedUser));
 
         // Update in all-users list
         const allUsers = JSON.parse(localStorage.getItem("hackathon-habit-all-users") || "[]");
-        const updatedUsers = allUsers.map((u: any) => u.id === currentUser.id ? { ...u, xp: newXP } : u);
+        const updatedUsers = allUsers.map((u: { id: string }) =>
+          u.id === currentUser.id ? updatedUser : u
+        );
         localStorage.setItem("hackathon-habit-all-users", JSON.stringify(updatedUsers));
+      }
+
+      // 🎯 Analyze user's code for history and feedback
+      const timeTaken = Math.floor((Date.now() - problemStartTime.current) / 1000); // seconds
+      setActualTimeTaken(timeTaken);
+      const analysis = analyzeUserCode(code, currentProblem.category, timeTaken);
+      setCodeAnalysis(analysis); // Trigger modal state
+
+      // Save Detailed History for Adaptive/Weakness Analysis
+      const detailedHistory = JSON.parse(localStorage.getItem("hackathon-habit-detailed-history") || "[]");
+      detailedHistory.push({
+        problemId: currentProblem.id,
+        title: currentProblem.title,
+        category: currentProblem.category,
+        date: Date.now(),
+        result: 'solved',
+        timeTaken,
+        masteryLevel: analysis.masteryLevel,
+        timeComplexity: analysis.timeComplexity
+      });
+      localStorage.setItem("hackathon-habit-detailed-history", JSON.stringify(detailedHistory));
+
+      // Track solved problem IDs for recommendations
+      const solvedIds = JSON.parse(localStorage.getItem("hackathon-habit-solved-ids") || "[]");
+      if (!solvedIds.includes(currentProblem.id)) {
+        solvedIds.push(currentProblem.id);
+        localStorage.setItem("hackathon-habit-solved-ids", JSON.stringify(solvedIds));
       }
 
       toast.success(`+${xpGain} XP Gained!`, {
@@ -309,11 +420,10 @@ const Index = () => {
             description: `${newRank.description} - Keep crushing it!`,
             duration: 5000,
           });
-          confetti({
-            particleCount: 150,
-            spread: 120,
-            origin: { y: 0.6 },
-            colors: [newRank.color, '#FFD700', '#FFFFFF']
+
+          // Trigger visual effects specific to the new rank
+          import("@/lib/rankAnimations").then(({ triggerRankUpAnimation }) => {
+            triggerRankUpAnimation(newRank);
           });
         }, 1000);
       }
@@ -332,6 +442,11 @@ const Index = () => {
       }
 
       toast.success("Solution Accepted!", { description: "Great work!" });
+
+      // Show feedback modal after a short delay
+      setTimeout(() => {
+        setShowFeedback(true);
+      }, 1500);
     } else {
       toast.error("Solution Failed", { description: "Check results for details." });
     }
@@ -373,6 +488,19 @@ const Index = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Solution Feedback Modal */}
+      {codeAnalysis && currentProblem && (
+        <SolutionFeedback
+          open={showFeedback}
+          onClose={() => setShowFeedback(false)}
+          analysis={codeAnalysis}
+          problem={currentProblem}
+          timeTaken={actualTimeTaken}
+          onContinuePractice={handleContinuePractice}
+          onNextProblem={handleNextProblem}
+        />
+      )}
 
       <div className="relative container max-w-6xl mx-auto px-4 py-4 md:py-6 space-y-4 md:space-y-6">
         <Header streak={streak} problemsSolved={problemsSolved} xp={userXP} />
@@ -421,7 +549,7 @@ const Index = () => {
           <div className="space-y-4 md:space-y-6 order-first lg:order-last">
             <TimerCard />
             <HintSystem
-              hints={currentProblem.hints}
+              hints={currentProblem.hints.slice(0, 1)}
               testsPassed={testResults.filter(r => r.passed).length}
               totalTests={currentProblem.testCases.length}
             />

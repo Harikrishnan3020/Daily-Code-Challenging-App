@@ -16,26 +16,36 @@ const Leaderboard = () => {
     const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 
     useEffect(() => {
-        // Load all users from localStorage
+        // Get current user
+        const savedUserStr = localStorage.getItem("hackathon-habit-user");
+        let currentUser: UserType | null = null;
+        if (savedUserStr) {
+            currentUser = JSON.parse(savedUserStr);
+            setCurrentUser(currentUser);
+        }
+
+        // Load all users
         let allUsers = JSON.parse(localStorage.getItem("hackathon-habit-all-users") || "[]");
 
-        // IMPORTANT: Filter out any users without a valid createdAt date
-        // This removes pre-seeded fake data while keeping real logged-in users
-        allUsers = allUsers.filter((user: UserType) => {
-            // Keep users who have a createdAt timestamp (real users from login)
-            // Remove users without proper metadata (fake/seeded data)
-            return user.createdAt && user.id && user.email;
-        });
+        // USER REQUEST: Remove fake data. Only display the user who is logged in.
+        // Filter list to only include the current user.
+        if (currentUser) {
+            const filteredUsers = allUsers.filter((u: UserType) => u.email === currentUser?.email);
 
-        // Sort by XP descending
+            // If the filtered list is different (meaning we removed fake users), update localStorage
+            if (filteredUsers.length !== allUsers.length) {
+                // Ensure current user is present if they weren't found (e.g. first load)
+                if (filteredUsers.length === 0) {
+                    filteredUsers.push(currentUser);
+                }
+                localStorage.setItem("hackathon-habit-all-users", JSON.stringify(filteredUsers));
+                allUsers = filteredUsers;
+            }
+        }
+
+        // Sort by XP descending (though with 1 user it is trivial)
         const sortedUsers = allUsers.sort((a: UserType, b: UserType) => (b.xp || 0) - (a.xp || 0));
         setUsers(sortedUsers);
-
-        // Get current user to highlight
-        const savedUser = localStorage.getItem("hackathon-habit-user");
-        if (savedUser) {
-            setCurrentUser(JSON.parse(savedUser));
-        }
     }, []);
 
     const getRankIcon = (index: number) => {

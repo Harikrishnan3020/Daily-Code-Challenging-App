@@ -14,11 +14,11 @@ export interface TestResult {
     /** Whether the test succeeded */
     passed: boolean;
     /** The arguments passed to the function */
-    input: any;
+    input: unknown;
     /** The expected return value */
-    expected: any;
+    expected: unknown;
     /** The actual returned value */
-    actual: any;
+    actual: unknown;
     /** Error message if an exception was thrown */
     error?: string;
 }
@@ -37,13 +37,15 @@ const TestResults = ({ results, visible }: TestResultsProps) => {
 
     return (
         <div className="glass-card p-4 md:p-6 animate-slide-up mt-4 md:mt-6">
-            <h3 className={`text-sm font-semibold mb-3 flex items-center gap-2 ${allPassed ? "text-success" : "text-destructive"}`}>
-                {allPassed ? (
+            <h3 className={`text-sm font-semibold mb-3 flex items-center gap-2 ${allPassed ? "text-success" : results.length === 0 ? "text-muted-foreground" : "text-destructive"}`}>
+                {results.length === 0 ? (
+                    <AlertCircle className="w-4 h-4" />
+                ) : allPassed ? (
                     <CheckCircle2 className="w-4 h-4" />
                 ) : (
                     <XCircle className="w-4 h-4" />
                 )}
-                {allPassed ? "All Test Cases Passed" : "Some Test Cases Failed"}
+                {results.length === 0 ? "No Test Cases Run" : allPassed ? "All Test Cases Passed" : "Some Test Cases Failed"}
             </h3>
 
             <ScrollArea className="max-h-[300px] pr-4">

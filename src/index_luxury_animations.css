@@ -1,0 +1,697 @@
+/* ========================================
+   LUXURY LEAGUE ANIMATIONS
+   Ultra-premium mind-blowing effects
+   ======================================== */
+
+/* Luxury Pulse - Intense multi-layer glow */
+@keyframes luxury-pulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 30px rgba(34, 211, 238, 0.4),
+            0 0 60px rgba(34, 211, 238, 0.3),
+            0 0 90px rgba(34, 211, 238, 0.2),
+            0 0 120px rgba(168, 85, 247, 0.2);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow:
+            0 0 40px rgba(34, 211, 238, 0.6),
+            0 0 80px rgba(34, 211, 238, 0.5),
+            0 0 120px rgba(34, 211, 238, 0.4),
+            0 0 160px rgba(168, 85, 247, 0.3);
+        transform: scale(1.02);
+    }
+}
+
+.animate-luxury-pulse {
+    animation: luxury-pulse 3s ease-in-out infinite;
+}
+
+/* Aurora Background - Multi-color shifting */
+@keyframes aurora {
+    0% {
+        background-position: 0% 50%;
+        opacity: 0.7;
+    }
+
+    33% {
+        background-position: 50% 100%;
+        opacity: 0.8;
+    }
+
+    66% {
+        background-position: 100% 50%;
+        opacity: 0.7;
+    }
+
+    100% {
+        background-position: 0% 50%;
+        opacity: 0.7;
+    }
+}
+
+.animate-aurora {
+    background-size: 300% 300%;
+    animation: aurora 8s ease infinite;
+}
+
+/* Holographic Shimmer */
+@keyframes holographic-shimmer {
+    0% {
+        transform: translateX(-150%) rotate(-10deg);
+    }
+
+    100% {
+        transform: translateX(250%) rotate(-10deg);
+    }
+}
+
+.animate-holographic-shimmer {
+    animation: holographic-shimmer 3s infinite linear;
+}
+
+/* Shimmer Luxury - Faster, more intense */
+@keyframes shimmer-luxury {
+    0% {
+        transform: translateX(-100%) skewX(-12deg);
+    }
+
+    100% {
+        transform: translateX(300%) skewX(-12deg);
+    }
+}
+
+.animate-shimmer-luxury {
+    animation: shimmer-luxury 2.5s infinite linear;
+}
+
+/* Pulse Rings - Expanding circles */
+@keyframes pulse-ring-1 {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes pulse-ring-2 {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.8);
+        opacity: 0;
+    }
+}
+
+.animate-pulse-ring-1 {
+    animation: pulse-ring-1 2s ease-out infinite;
+}
+
+.animate-pulse-ring-2 {
+    animation: pulse-ring-2 2s ease-out infinite 0.5s;
+}
+
+/* Luxury Particle Animations */
+@keyframes particle-luxury-1 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(0);
+        opacity: 0;
+    }
+
+    10% {
+        transform: translate(5px, 5px) scale(1);
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(30px, 80px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+@keyframes particle-luxury-2 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(0);
+        opacity: 0;
+    }
+
+    15% {
+        transform: translate(-5px, 5px) scale(1);
+        opacity: 1;
+    }
+
+    85% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-25px, 85px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+@keyframes particle-luxury-3 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(0);
+        opacity: 0;
+    }
+
+    20% {
+        transform: translate(3px, -3px) scale(1);
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(15px, -75px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+@keyframes particle-luxury-4 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(0);
+        opacity: 0;
+    }
+
+    25% {
+        transform: translate(-3px, 3px) scale(1);
+        opacity: 1;
+    }
+
+    75% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-20px, 60px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+@keyframes particle-luxury-5 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(0);
+        opacity: 0;
+    }
+
+    30% {
+        transform: translate(2px, -2px) scale(1);
+        opacity: 1;
+    }
+
+    70% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(10px, -50px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+.animate-particle-luxury-1 {
+    animation: particle-luxury-1 4s ease-in-out infinite;
+}
+
+.animate-particle-luxury-2 {
+    animation: particle-luxury-2 4.5s ease-in-out infinite 0.3s;
+}
+
+.animate-particle-luxury-3 {
+    animation: particle-luxury-3 5s ease-in-out infinite 0.6s;
+}
+
+.animate-particle-luxury-4 {
+    animation: particle-luxury-4 3.5s ease-in-out infinite 0.9s;
+}
+
+.animate-particle-luxury-5 {
+    animation: particle-luxury-5 4.2s ease-in-out infinite 1.2s;
+}
+
+/* Breathe - Subtle pulsing */
+@keyframes breathe {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(1.05);
+    }
+}
+
+.animate-breathe {
+    animation: breathe 4s ease-in-out infinite;
+}
+
+/* Rotate Slow */
+@keyframes rotate-slow {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-rotate-slow {
+    animation: rotate-slow 20s linear infinite;
+}
+
+/* Float Luxury */
+@keyframes float-luxury {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.animate-float-luxury {
+    animation: float-luxury 3s ease-in-out infinite;
+}
+
+/* Icon Glow */
+@keyframes icon-glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 25px rgba(255, 255, 255, 1)) drop-shadow(0 0 35px rgba(34, 211, 238, 0.8));
+    }
+}
+
+.animate-icon-glow {
+    animation: icon-glow 2s ease-in-out infinite;
+}
+
+/* Text Shimmer */
+@keyframes text-shimmer {
+    0% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(34, 211, 238, 0.6), 0 0 30px rgba(34, 211, 238, 0.4);
+    }
+
+    50% {
+        text-shadow: 0 0 15px rgba(255, 255, 255, 1), 0 0 30px rgba(34, 211, 238, 0.8), 0 0 45px rgba(34, 211, 238, 0.6), 0 0 60px rgba(168, 85, 247, 0.4);
+    }
+
+    100% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(34, 211, 238, 0.6), 0 0 30px rgba(34, 211, 238, 0.4);
+    }
+}
+
+.animate-text-shimmer {
+    animation: text-shimmer 3s ease-in-out infinite;
+}
+
+/* Luxury Text Shadow */
+.text-shadow-luxury {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 1), 0 0 30px rgba(34, 211, 238, 0.8), 0 0 45px rgba(34, 211, 238, 0.6), 0 0 60px rgba(168, 85, 247, 0.4);
+}
+
+/* Corner Shine and Border Glow */
+@keyframes corner-shine {
+
+    0%,
+    100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes corner-shine-reverse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        opacity: 0.9;
+        transform: scale(1.1) rotate(5deg);
+    }
+}
+
+.animate-corner-shine {
+    animation: corner-shine 3s ease-in-out infinite;
+}
+
+.animate-corner-shine-reverse {
+    animation: corner-shine-reverse 3s ease-in-out infinite 0.5s;
+}
+
+@keyframes luxury-border-glow {
+
+    0%,
+    100% {
+        box-shadow: inset 0 0 20px rgba(34, 211, 238, 0.3), inset 0 0 40px rgba(168, 85, 247, 0.2);
+    }
+
+    50% {
+        box-shadow: inset 0 0 35px rgba(34, 211, 238, 0.5), inset 0 0 70px rgba(168, 85, 247, 0.3);
+    }
+}
+
+.animate-luxury-border-glow {
+    animation: luxury-border-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes scan-line {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(200%);
+        opacity: 0;
+    }
+}
+
+.animate-scan-line {
+    animation: scan-line 4s ease-in-out infinite;
+}
+
+/* Delay utilities */
+.delay-200 {
+    animation-delay: 200ms;
+}
+
+.delay-400 {
+    animation-delay: 400ms;
+}
+
+.delay-600 {
+    animation-delay: 600ms;
+}
+
+.delay-800 {
+    animation-delay: 800ms;
+}
+
+/* ========================================
+   SNOW EFFECT ANIMATIONS
+   Falling snow particles
+   ======================================== */
+.snowflake {
+    position: absolute;
+    top: -10px;
+    animation: snowfall linear infinite;
+    user-select: none;
+    pointer-events: none;
+}
+
+@keyframes snowfall {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes sway {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(20px);
+    }
+}
+
+.sway {
+    animation: snowfall linear infinite, sway 3s ease-in-out infinite;
+}
+
+/* Snowflake delays/positions */
+.snowflake:nth-child(1) {
+    left: 10%;
+    animation-duration: 8s;
+    animation-delay: 0s;
+}
+
+.snowflake:nth-child(2) {
+    left: 20%;
+    animation-duration: 12s;
+    animation-delay: 2s;
+}
+
+.snowflake:nth-child(3) {
+    left: 30%;
+    animation-duration: 10s;
+    animation-delay: 4s;
+}
+
+.snowflake:nth-child(4) {
+    left: 40%;
+    animation-duration: 14s;
+    animation-delay: 1s;
+}
+
+.snowflake:nth-child(5) {
+    left: 50%;
+    animation-duration: 9s;
+    animation-delay: 3s;
+}
+
+.snowflake:nth-child(6) {
+    left: 60%;
+    animation-duration: 11s;
+    animation-delay: 5s;
+}
+
+.snowflake:nth-child(7) {
+    left: 70%;
+    animation-duration: 13s;
+    animation-delay: 0.5s;
+}
+
+.snowflake:nth-child(8) {
+    left: 80%;
+    animation-duration: 10s;
+    animation-delay: 2.5s;
+}
+
+.snowflake:nth-child(9) {
+    left: 90%;
+    animation-duration: 12s;
+    animation-delay: 4.5s;
+}
+
+.snowflake:nth-child(10) {
+    left: 15%;
+    animation-duration: 11s;
+    animation-delay: 1.5s;
+}
+
+/* ========================================
+   CHERRY BLOSSOM ANIMATIONS (SAKURA)
+   Falling pink petals with rotation
+   ======================================== */
+.petal {
+    position: absolute;
+    top: -10px;
+    animation: petalfall linear infinite;
+    user-select: none;
+    pointer-events: none;
+    border-radius: 100% 0 100% 0;
+}
+
+@keyframes petalfall {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.9;
+    }
+
+    90% {
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: translateY(100vh) translateX(50px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes petal-sway {
+
+    0%,
+    100% {
+        transform: translateX(0) rotate(0deg);
+    }
+
+    25% {
+        transform: translateX(15px) rotate(45deg);
+    }
+
+    50% {
+        transform: translateX(0) rotate(90deg);
+    }
+
+    75% {
+        transform: translateX(-15px) rotate(135deg);
+    }
+}
+
+.petal-flow {
+    animation: petalfall linear infinite, petal-sway 4s ease-in-out infinite;
+}
+
+/* Petal variations */
+.petal:nth-child(1) {
+    left: 10%;
+    width: 10px;
+    height: 10px;
+    animation-duration: 7s;
+    animation-delay: 0s;
+    background: #ffb7b2;
+}
+
+.petal:nth-child(2) {
+    left: 25%;
+    width: 12px;
+    height: 8px;
+    animation-duration: 9s;
+    animation-delay: 2s;
+    background: #ff9cee;
+}
+
+.petal:nth-child(3) {
+    left: 40%;
+    width: 8px;
+    height: 12px;
+    animation-duration: 8s;
+    animation-delay: 4s;
+    background: #ffb7b2;
+}
+
+.petal:nth-child(4) {
+    left: 55%;
+    width: 14px;
+    height: 9px;
+    animation-duration: 10s;
+    animation-delay: 1s;
+    background: #ffdac1;
+}
+
+.petal:nth-child(5) {
+    left: 70%;
+    width: 10px;
+    height: 10px;
+    animation-duration: 6s;
+    animation-delay: 3s;
+    background: #ff9cee;
+}
+
+.petal:nth-child(6) {
+    left: 85%;
+    width: 12px;
+    height: 12px;
+    animation-duration: 8s;
+    animation-delay: 5s;
+    background: #ffb7b2;
+}
+
+.petal:nth-child(7) {
+    left: 15%;
+    width: 9px;
+    height: 14px;
+    animation-duration: 11s;
+    animation-delay: 1.5s;
+    background: #ffdac1;
+}
+
+.petal:nth-child(8) {
+    left: 35%;
+    width: 11px;
+    height: 11px;
+    animation-duration: 7.5s;
+    animation-delay: 2.5s;
+    background: #ffb7b2;
+}
+
+.petal:nth-child(9) {
+    left: 65%;
+    width: 13px;
+    height: 9px;
+    animation-duration: 9.5s;
+    animation-delay: 3.5s;
+    background: #ff9cee;
+}
+
+.petal:nth-child(10) {
+    left: 90%;
+    width: 10px;
+    height: 10px;
+    animation-duration: 8.5s;
+    animation-delay: 0.5s;
+    background: #ffdac1;
+}

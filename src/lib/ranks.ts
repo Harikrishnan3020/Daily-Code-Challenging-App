@@ -59,11 +59,31 @@ export const RANKS: Rank[] = [
         name: "Diamond",
         tier: 5,
         minXP: 7000,
-        maxXP: Infinity,
+        maxXP: 14999,
         color: "#B9F2FF",
         gradient: "from-blue-300 to-purple-400",
         icon: "💠",
         description: "Legendary master"
+    },
+    {
+        name: "Master",
+        tier: 6,
+        minXP: 15000,
+        maxXP: 29999,
+        color: "#FF4500",
+        gradient: "from-red-500 to-red-700",
+        icon: "👹",
+        description: "Grandmaster in training"
+    },
+    {
+        name: "Grandmaster",
+        tier: 7,
+        minXP: 30000,
+        maxXP: Infinity,
+        color: "#FF0000",
+        gradient: "from-red-600 to-purple-900",
+        icon: "👑",
+        description: "God-tier developer"
     }
 ];
 

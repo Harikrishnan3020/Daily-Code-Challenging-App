@@ -18,9 +18,19 @@ export interface User {
     /** Optional URL to the user's avatar image */
     avatar?: string;
     /** Authentication provider used by the user */
-    provider: "Google" | "GitHub" | "Email" | (string & {});
+    provider: "Google" | "GitHub" | "Email" | "Free Account" | (string & {});
     /** User's experience points */
     xp?: number;
+    /** Number of problems solved by the user */
+    problemsSolved?: number;
+    /** Current streak in days */
+    streak?: number;
+    /** User's skill level */
+    level?: "beginner" | "intermediate" | "advanced";
+    /** Problem solving history */
+    history?: any[];
+    /** Last visit timestamp */
+    lastVisit?: string;
     /** Date when the account was created */
     createdAt?: string;
 }

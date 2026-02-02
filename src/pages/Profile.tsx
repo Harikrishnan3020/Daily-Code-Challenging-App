@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trophy, Flame, Zap, Calendar, Medal } from "lucide-react";
+import { ArrowLeft, Trophy, Flame, Zap, Calendar, Medal, Target, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import RankProgressionCard from "@/components/RankProgressionCard";
-
+import SkillRadar from "@/components/SkillRadar";
+import WeaknessAnalysis from "@/components/WeaknessAnalysis";
+import RecommendedProblems from "@/components/RecommendedProblems";
+import { getTopicStats, TopicStat, getRecommendedProblems, RecommendedProblem } from "@/lib/analytics";
+import { ChartErrorBoundary } from "@/components/ChartErrorBoundary";
 import { User } from "@/types";
 
 const Profile = () => {
@@ -15,7 +19,9 @@ const Profile = () => {
         level: "beginner",
         xp: 0
     });
-    const [history, setHistory] = useState<string[]>([]);
+    const [history, setHistory] = useState<any[]>([]); // Supports legacy strings and new detailed objects
+    const [topicStats, setTopicStats] = useState<TopicStat[]>([]);
+    const [recommendedProblems, setRecommendedProblems] = useState<RecommendedProblem[]>([]);
 
     useEffect(() => {
         // Load User
@@ -39,10 +45,22 @@ const Profile = () => {
         setStats({ streak, solved, level, xp });
 
         // Load History
+        // Load History (Prefer detailed, fallback to legacy)
         try {
-            const historyData = JSON.parse(localStorage.getItem("hackathon-habit-history") || "[]");
-            // Reverse to show newest first
-            setHistory(historyData.reverse());
+            const detailedHistory = JSON.parse(localStorage.getItem("hackathon-habit-detailed-history") || "[]");
+            if (detailedHistory.length > 0) {
+                setHistory(detailedHistory.reverse());
+            } else {
+                const historyData = JSON.parse(localStorage.getItem("hackathon-habit-history") || "[]");
+                setHistory(historyData.reverse());
+            }
+
+            // Load Topic Stats
+            const stats = getTopicStats();
+            setTopicStats(stats);
+
+            // Load Recommended Problems based on weaknesses
+            setRecommendedProblems(getRecommendedProblems(stats));
         } catch (e) {
             console.error("Failed to parse history", e);
         }
@@ -133,12 +151,50 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
+                {/* Skill Insights Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Radar Chart */}
+                    <div className="lg:col-span-1 glass-card p-6 animate-slide-up" style={{ animationDelay: "0.4s" }}>
+                        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+                            <Zap className="w-5 h-5 text-primary" />
+                            Skill Radar
+                        </h2>
+                        <ChartErrorBoundary>
+                            <SkillRadar data={topicStats} />
+                        </ChartErrorBoundary>
+                    </div>
+
+                    {/* Detailed Analysis */}
+                    <div className="lg:col-span-2 glass-card p-6 animate-slide-up" style={{ animationDelay: "0.5s" }}>
+                        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+                            <Trophy className="w-5 h-5 text-primary" />
+                            Performance Insights
+                        </h2>
+                        <ChartErrorBoundary>
+                            <WeaknessAnalysis data={topicStats} />
+                        </ChartErrorBoundary>
+                    </div>
+                </div>
+
+                {/* Recommended Problems Section */}
+                {recommendedProblems.length > 0 && (
+                    <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: "0.55s" }}>
+                        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+                            <Target className="w-5 h-5 text-primary" />
+                            Recommended Problems for You
+                        </h2>
+                        <p className="text-sm text-muted-foreground mb-4">
+                            Based on your performance, here are problems to help you improve:
+                        </p>
+                        <RecommendedProblems problems={recommendedProblems} />
+                    </div>
+                )}
 
                 {/* Rank Progression Section */}
                 <RankProgressionCard problemsSolved={stats.solved} xp={stats.xp} />
 
                 {/* Activity History */}
-                <div className="glass-card p-6 md:p-8 animate-slide-up" style={{ animationDelay: "0.4s" }}>
+                <div className="glass-card p-6 md:p-8 animate-slide-up" style={{ animationDelay: "0.6s" }}>
                     <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                         <Calendar className="w-5 h-5 text-primary" />
                         Recent Activity
@@ -146,17 +202,42 @@ const Profile = () => {
 
                     {history.length > 0 ? (
                         <div className="space-y-4">
-                            {history.map((title, i) => (
-                                <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
-                                            <Zap className="w-4 h-4" />
+                            {history.map((item, i) => {
+                                const isDetailed = typeof item === 'object';
+                                const title = isDetailed ? item.title : item;
+                                const category = isDetailed ? item.category : 'Code Practice';
+                                const date = isDetailed ? new Date(item.date).toLocaleDateString() : '';
+                                const mastery = isDetailed ? item.masteryLevel : null;
+
+                                return (
+                                    <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center 
+                                                ${isDetailed ? 'bg-primary/20 text-primary' : 'bg-green-500/20 text-green-500'}`}>
+                                                {isDetailed ? <Target className="w-5 h-5" /> : <Zap className="w-5 h-5" />}
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium group-hover:text-primary transition-colors">{title}</h4>
+                                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                                    <span>{category}</span>
+                                                    {date && <span>• {date}</span>}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <span className="font-medium group-hover:text-primary transition-colors">{title}</span>
+
+                                        <div className="flex flex-col items-end gap-1">
+                                            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                                Solved
+                                            </span>
+                                            {mastery && (
+                                                <span className="text-[10px] text-muted-foreground">
+                                                    {mastery}% Mastery
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
-                                    <span className="text-xs text-muted-foreground">Solved</span>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="text-center py-12 text-muted-foreground">
@@ -164,8 +245,8 @@ const Profile = () => {
                             <p className="text-sm mt-2">Start your journey today!</p>
                         </div>
                     )}
-                </div>
 
+                </div>
             </div>
         </div>
     );

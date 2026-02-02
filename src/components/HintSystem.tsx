@@ -72,7 +72,7 @@ const HintSystem = ({ hints, testsPassed = 0, totalTests = 3 }: HintSystemProps)
             {/* Info about test case linkage */}
             {problemsSolved > 0 && (
                 <div className="mb-3 text-xs text-muted-foreground bg-secondary/20 border border-border/20 rounded p-2">
-                    💡 Each hint helps with a specific test case. Pass tests to unlock more hints!
+                    💡 Stuck? Here is a hint to help you solve the problem.
                 </div>
             )}
 
@@ -149,7 +149,7 @@ const HintSystem = ({ hints, testsPassed = 0, totalTests = 3 }: HintSystemProps)
                     </span>
                     {testsPassed < totalTests && (
                         <span className="block mt-1 text-warning">
-                            → Complete more tests to unlock hints!
+                            → Ensure your solution handles all edge cases!
                         </span>
                     )}
                 </div>

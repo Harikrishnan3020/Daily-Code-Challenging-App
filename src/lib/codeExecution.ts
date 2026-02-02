@@ -36,15 +36,15 @@ export const executeCode = async (
     language: Language,
     code: string,
     problem: Problem,
-    input: any[]
-): Promise<any> => {
+    input: unknown[]
+): Promise<unknown> => {
     if (language === "javascript") {
         // Local execution for JS using Function constructor.
         // WARNING: This runs in the browser's context. 
         // In a production environment with untrusted code, this should be sandboxed or run server-side.
         const userFn = new Function(code + `\nreturn ${problem.functionName};`)();
         if (typeof userFn !== "function") throw new Error(`Function ${problem.functionName} not found.`);
-        return userFn(...input);
+        return userFn(...(input as any[])); // eslint-disable-line @typescript-eslint/no-explicit-any
     }
 
     // Piston Execution for Python, C, C++
@@ -123,9 +123,10 @@ if __name__ == "__main__":
             return output.trim();
         }
 
-    } catch (err: any) {
+    } catch (err: unknown) {
         // Enhance error message with line numbers if possible
-        let errorMsg = err.message || "Execution failed";
+        let errorMsg = (err as Error).message || "Execution failed";
+        const errorStack = (err as Error).stack;
 
         if (language === "python") {
             // Python Piston errors usually look like: File "...", line 5, in ...
@@ -139,11 +140,10 @@ if __name__ == "__main__":
         } else if (language === "javascript") {
             // JS errors in new Function often have line info in the stack, not the message
             // Format: <anonymous>:2:5 or just :2:5
-            if (err.stack) {
-                const stackLines = err.stack.split('\n');
+            if (errorStack) {
                 // Regex to find :line:column pattern typical in V8/Browsers for eval/new Function
                 // Looking for patterns like (<anonymous>:2:15) or (eval at ... :2:15)
-                const lineMatch = err.stack.match(/<anonymous>:(\d+):/);
+                const lineMatch = errorStack.match(/<anonymous>:(\d+):/);
                 if (lineMatch && lineMatch[1]) {
                     const lineNum = parseInt(lineMatch[1], 10);
                     // The appended "return ..." could cause errors on the last line + 1, 

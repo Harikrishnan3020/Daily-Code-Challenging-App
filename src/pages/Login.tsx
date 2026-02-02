@@ -56,19 +56,57 @@ const Login = () => {
                 // Save auth token (simulated)
                 localStorage.setItem("hackathon-habit-auth", "demo-token");
 
-                // Save mock user for Header display
-                // Try to find existing user first, else user generic one
+                // Try to find existing user first
                 const users = JSON.parse(localStorage.getItem("hackathon-habit-all-users") || "[]");
                 const existingUser = users.find((u: Account) => u.email === email);
 
-                const userToSave = existingUser || {
-                    id: `user_${Date.now()}`,
-                    email: email,
-                    name: email.split("@")[0],
-                    avatar: "",
-                    provider: "Email",
-                    xp: 0
-                };
+                let userToSave: Account;
+
+                if (existingUser) {
+                    // EXISTING USER - Load their saved progress
+                    userToSave = existingUser;
+
+                    // Restore their progress to localStorage for the app to use
+                    localStorage.setItem("hackathon-habit-solved", String(existingUser.problemsSolved || 0));
+                    localStorage.setItem("hackathon-habit-streak", String(existingUser.streak || 0));
+                    localStorage.setItem("hackathon-habit-xp", String(existingUser.xp || 0));
+                    localStorage.setItem("hackathon-habit-level", existingUser.level || "beginner");
+
+                    if (existingUser.history) {
+                        localStorage.setItem("hackathon-habit-history", JSON.stringify(existingUser.history));
+                    }
+
+                    if (existingUser.lastVisit) {
+                        localStorage.setItem("hackathon-habit-last-visit", existingUser.lastVisit);
+                    }
+
+                    toast.success("Welcome back!", { description: `You have ${existingUser.xp || 0} XP and ${existingUser.streak || 0} day streak!` });
+                } else {
+                    // NEW USER - Create fresh account
+                    userToSave = {
+                        id: `user_${Date.now()}`,
+                        email: email,
+                        name: email.split("@")[0],
+                        avatar: "",
+                        provider: "Email",
+                        xp: 0,
+                        problemsSolved: 0,
+                        streak: 0,
+                        level: "beginner",
+                        history: [],
+                        createdAt: new Date().toISOString()
+                    };
+
+                    // Initialize fresh progress
+                    localStorage.setItem("hackathon-habit-solved", "0");
+                    localStorage.setItem("hackathon-habit-streak", "0");
+                    localStorage.setItem("hackathon-habit-xp", "0");
+                    localStorage.setItem("hackathon-habit-level", "beginner");
+                    localStorage.removeItem("hackathon-habit-history");
+
+                    users.push(userToSave);
+                    toast.success("Welcome!", { description: "Let's build that coding habit!" });
+                }
 
                 localStorage.setItem("hackathon-habit-user", JSON.stringify(userToSave));
 
@@ -76,15 +114,9 @@ const Login = () => {
                 const userIndex = users.findIndex((u: Account) => u.email === email);
                 if (userIndex >= 0) {
                     users[userIndex] = userToSave;
-                } else {
-                    users.push(userToSave);
                 }
                 localStorage.setItem("hackathon-habit-all-users", JSON.stringify(users));
 
-                // If it's the demo-user (not found in users list), we might want to carry over existing progress if any
-                // But for now, just load what we have.
-
-                toast.success("Welcome back!", { description: "Let's build that coding habit!" });
                 navigate("/");
             } else {
                 toast.error("Invalid credentials", { description: "Please check your email and password" });
