@@ -1,3 +1,8 @@
+/**
+ * File: carousel.tsx
+ * Description: Implementation of carousel.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import * as React from "react";
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
