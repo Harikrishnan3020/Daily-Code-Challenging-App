@@ -1,3 +1,8 @@
+/**
+ * File: card.tsx
+ * Description: Implementation of card.
+ * Copyright: 2026 Daily Code Challenge
+ */
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
